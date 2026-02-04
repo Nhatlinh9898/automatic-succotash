@@ -1,0 +1,48 @@
+{
+  "name": "threejs-3d-model-library",
+  "version": "1.0.0",
+  "description": "mô hình 3d thư viện code - Comprehensive Three.js 3D modeling library with animations and effects",
+  "main": "library/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "python -m http.server 8080",
+    "lint": "eslint library/**/*.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "threejs",
+    "3d",
+    "webgl",
+    "animation",
+    "particles",
+    "models",
+    "graphics",
+    "javascript",
+    "library",
+    "3d-modeling",
+    "web-development"
+  ],
+  "author": "Nhatlinh9898",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nhatlinh9898/automatic-succotash.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nhatlinh9898/automatic-succotash/issues"
+  },
+  "homepage": "https://github.com/Nhatlinh9898/automatic-succotash#readme",
+  "dependencies": {
+    "three": "^0.158.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "eslint": "^8.55.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Assistant - Smart Character Creation Guide</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #fbbf24;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #a78bfa;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .results-section {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .section-title {
+            color: #fbbf24;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a78bfa;
+            font-weight: bold;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+        
+        .analysis-title {
+            color: #fbbf24;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .detected-elements {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .element-tag {
+            background: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+        
+        .step-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #a78bfa;
+        }
+        
+        .step-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .step-number {
+            background: #a78bfa;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .step-title {
+            color: #fbbf24;
+            font-size: 1.1em;
+        }
+        
+        .step-status {
+            margin-left: auto;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+        
+        .status-completed {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .status-in-progress {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        .status-not-started {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .guidance-list {
+            margin-top: 10px;
+        }
+        
+        .guidance-item {
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .guidance-item strong {
+            color: #a78bfa;
+        }
+        
+        .example-prompt {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            margin-top: 10px;
+        }
+        
+        .copy-button {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(34, 197, 94, 0.4);
+        }
+        
+        .reference-prompts {
+            margin-top: 15px;
+        }
+        
+        .reference-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reference-item:hover {
+            background: rgba(167, 139, 250, 0.1);
+        }
+        
+        .similarity-score {
+            background: #fbbf24;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        
+        .tips-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .tip-item {
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        
+        .tip-category {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #fbbf24;
+        }
+        
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ef4444;
+        }
+        
+        .success {
+            background: rgba(34, 197, 94, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #22c55e;
+        }
+        
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Prompt Assistant</h1>
+            <p>Smart Character Creation Guide with Reference Prompts</p>
+        </div>
+        
+        <div class="main-grid">
+            <!-- Input Section -->
+            <div class="input-section">
+                <h2 class="section-title">📝 Your Character Idea</h2>
+                
+                <div class="input-group">
+                    <label for="userInput">Describe your character idea:</label>
+                    <textarea id="userInput" rows="6" placeholder="E.g., 'A brave warrior with silver hair' or 'A futuristic hacker with neon pink hair'">A brave warrior with silver hair</textarea>
+                </div>
+                
+                <button class="button" id="analyzeBtn" onclick="analyzeUserInput()">🔍 Analyze & Create Guide</button>
+                <button class="button" onclick="clearResults()">🗑️ Clear Results</button>
+                
+                <div id="message"></div>
+                
+                <!-- Quick Examples -->
+                <div class="analysis-card" style="margin-top: 20px;">
+                    <h3 class="analysis-title">💡 Quick Examples</h3>
+                    <div class="reference-item" onclick="setExample('A brave elven warrior with silver hair and glowing blue eyes')">
+                        Elven Warrior <span class="similarity-score">Fantasy</span>
+                    </div>
+                    <div class="reference-item" onclick="setExample('A futuristic cyborg hacker with neon pink hair and cybernetic implants')">
+                        Cyberpunk Hacker <span class="similarity-score">Sci-Fi</span>
+                    </div>
+                    <div class="reference-item" onclick="setExample('A sophisticated business executive in tailored suit with expensive watch')">
+                        Business Executive <span class="similarity-score">Modern</span>
+                    </div>
+                    <div class="reference-item" onclick="setExample('A wise old wizard with long white beard and magical robes')">
+                        Wizard <span class="similarity-score">Fantasy</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="results-section">
+                <h2 class="section-title">📋 Character Creation Guide</h2>
+                
+                <div id="results">
+                    <p style="text-align: center; color: #999;">Enter your character idea and click "Analyze & Create Guide" to get personalized guidance</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { AIPromptAssistant } from './framework/ai/AIPromptAssistant.js';
+        
+        // Initialize AI Assistant
+        let aiAssistant = null;
+        let currentGuide = null;
+        
+        // UI Elements
+        const userInput = document.getElementById('userInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const resultsDiv = document.getElementById('results');
+        const messageDiv = document.getElementById('message');
+        
+        // Initialize assistant
+        async function initializeAssistant() {
+            try {
+                aiAssistant = new AIPromptAssistant();
+                await aiAssistant.init();
+                console.log('AI Prompt Assistant initialized');
+            } catch (error) {
+                console.error('Failed to initialize AI Assistant:', error);
+                showMessage('Failed to initialize AI Assistant', 'error');
+            }
+        }
+        
+        // Analyze user input
+        window.analyzeUserInput = async function() {
+            const input = userInput.value.trim();
+            if (!input) {
+                showMessage('Please enter a character description', 'error');
+                return;
+            }
+            
+            try {
+                analyzeBtn.disabled = true;
+                analyzeBtn.textContent = '🔄 Analyzing...';
+                
+                // Analyze user input
+                const analysis = aiAssistant.analyzeUserRequest(input);
+                
+                // Create creation guide
+                const guide = aiAssistant.createCreationGuide(input, analysis);
+                currentGuide = guide;
+                
+                // Save to history
+                aiAssistant.saveToHistory(input, guide);
+                
+                // Display results
+                displayResults(guide);
+                
+                showMessage('Character creation guide generated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Analysis error:', error);
+                showMessage('Error analyzing input: ' + error.message, 'error');
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = '🔍 Analyze & Create Guide';
+            }
+        };
+        
+        // Display results
+        function displayResults(guide) {
+            const html = `
+                <!-- Analysis Overview -->
+                <div class="analysis-card">
+                    <h3 class="analysis-title">🔍 Analysis Overview</h3>
+                    <div class="detected-elements">
+                        ${guide.analysis.detectedElements.map(element => 
+                            `<span class="element-tag">${element.replace('_', ' ')}</span>`
+                        ).join('')}
+                    </div>
+                    <p><strong>Detected Genre:</strong> ${guide.analysis.suggestedGenre}</p>
+                    <p><strong>Archetype:</strong> ${guide.analysis.suggestedArchetype}</p>
+                    <p><strong>Detail Level:</strong> ${guide.analysis.detailLevel}</p>
+                </div>
+                
+                <!-- Step-by-Step Guide -->
+                <div class="analysis-card">
+                    <h3 class="analysis-title">📖 Step-by-Step Creation Guide</h3>
+                    ${guide.steps.map(step => `
+                        <div class="step-card">
+                            <div class="step-header">
+                                <div style="display: flex; align-items: center;">
+                                    <div class="step-number">${step.step}</div>
+                                    <div class="step-title">${step.title}</div>
+                                </div>
+                                <div class="step-status status-${step.current_status}">${step.current_status.replace('_', ' ')}</div>
+                            </div>
+                            <p>${step.description}</p>
+                            <div class="guidance-list">
+                                <div class="guidance-item"><strong>Focus on:</strong> ${step.elements.join(', ')}</div>
+                                <div class="guidance-item"><strong>Guidance:</strong> ${step.guidance.title}</div>
+                                <div class="guidance-item"><strong>Tips:</strong></div>
+                                ${step.guidance.tips.map(tip => 
+                                    `<div class="guidance-item">• ${tip}</div>`
+                                ).join('')}
+                                ${step.guidance.examples ? `
+                                    <div class="guidance-item"><strong>Examples:</strong></div>
+                                    ${step.guidance.examples.map(example => 
+                                        `<div class="guidance-item">• "${example}"</div>`
+                                    ).join('')}
+                                ` : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <!-- Example Prompt -->
+                <div class="analysis-card">
+                    <h3 class="analysis-title">✨ Enhanced Example Prompt</h3>
+                    <div class="example-prompt">${guide.example_prompt}</div>
+                    <button class="copy-button" onclick="copyPrompt('${guide.example_prompt.replace(/'/g, "\\'")}')">📋 Copy Enhanced Prompt</button>
+                </div>
+                
+                <!-- Reference Prompts -->
+                ${guide.analysis.recommendations.find(rec => rec.type === 'reference_prompts') ? `
+                    <div class="analysis-card">
+                        <h3 class="analysis-title">📚 Similar Reference Prompts</h3>
+                        <div class="reference-prompts">
+                            ${guide.analysis.recommendations.find(rec => rec.type === 'reference_prompts').prompts.map(ref => `
+                                <div class="reference-item" onclick="setExample('${ref.prompt.replace(/'/g, "\\'")}')">
+                                    ${ref.key.charAt(0).toUpperCase() + ref.key.slice(1).replace(/([A-Z])/g, ' $1')}
+                                    <span class="similarity-score">${ref.similarity} match</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <!-- Tips -->
+                <div class="tips-section">
+                    <h3 class="analysis-title">💡 Pro Tips</h3>
+                    ${guide.tips.map(tip => `
+                        <div class="tip-item">
+                            <span class="tip-category">${tip.category}:</span> ${tip.tip}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        // Set example
+        window.setExample = function(example) {
+            userInput.value = example;
+            userInput.focus();
+        };
+        
+        // Copy prompt
+        window.copyPrompt = function(prompt) {
+            navigator.clipboard.writeText(prompt).then(() => {
+                showMessage('Prompt copied to clipboard!', 'success');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showMessage('Failed to copy prompt', 'error');
+            });
+        };
+        
+        // Clear results
+        window.clearResults = function() {
+            resultsDiv.innerHTML = '<p style="text-align: center; color: #999;">Enter your character idea and click "Analyze & Create Guide" to get personalized guidance</p>';
+            userInput.value = '';
+            currentGuide = null;
+            showMessage('Results cleared', 'success');
+        };
+        
+        // Show message
+        function showMessage(message, type) {
+            messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 3000);
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && event.ctrlKey) {
+                event.preventDefault();
+                analyzeUserInput();
+            }
+        });
+        
+        // Initialize on load
+        initializeAssistant();
+    </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Prompt Generator - Quick Templates</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #fbbf24;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #a78bfa;
+        }
+        
+        .prompt-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .prompt-section {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .prompt-section h2 {
+            color: #fbbf24;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        
+        .prompt-category {
+            margin-bottom: 20px;
+        }
+        
+        .prompt-category h3 {
+            color: #a78bfa;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.3);
+            padding-bottom: 5px;
+        }
+        
+        .prompt-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #4c1d95;
+            color: #fff;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .prompt-button:hover {
+            background: rgba(167, 139, 250, 0.2);
+            border-color: #a78bfa;
+            transform: translateY(-2px);
+        }
+        
+        .prompt-display {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+        
+        .prompt-text {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid rgba(167, 139, 250, 0.2);
+        }
+        
+        .copy-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .random-button {
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .random-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+        
+        .stats {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #a78bfa;
+        }
+        
+        @media (max-width: 768px) {
+            .prompt-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎭 Character Prompt Generator</h1>
+            <p>Professional 3D Character Prompts for AI Generation</p>
+        </div>
+        
+        <div class="prompt-grid">
+            <!-- Male Prompts -->
+            <div class="prompt-section">
+                <h2>👨 Male Characters</h2>
+                
+                <div class="prompt-category">
+                    <h3>⚔️ Fantasy</h3>
+                    <button class="prompt-button" onclick="showPrompt('male', 'knight')">Knight</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'wizard')">Wizard</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'elfArcher')">Elf Archer</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'dwarfWarrior')">Dwarf Warrior</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'orcBerserker')">Orc Berserker</button>
+                </div>
+                
+                <div class="prompt-category">
+                    <h3>🌆 Modern</h3>
+                    <button class="prompt-button" onclick="showPrompt('male', 'businessExecutive')">Business Executive</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'doctor')">Doctor</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'policeOfficer')">Police Officer</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'scientist')">Scientist</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'athlete')">Athlete</button>
+                </div>
+                
+                <div class="prompt-category">
+                    <h3>🚀 Sci-Fi</h3>
+                    <button class="prompt-button" onclick="showPrompt('male', 'spaceMarine')">Space Marine</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'cyberpunkHacker')">Cyberpunk Hacker</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'alienDiplomat')">Alien Diplomat</button>
+                    <button class="prompt-button" onclick="showPrompt('male', 'android')">Android</button>
+                </div>
+                
+                <button class="random-button" onclick="showRandomPrompt('male')">🎲 Random Male</button>
+            </div>
+            
+            <!-- Female Prompts -->
+            <div class="prompt-section">
+                <h2>👩 Female Characters</h2>
+                
+                <div class="prompt-category">
+                    <h3>⚔️ Fantasy</h3>
+                    <button class="prompt-button" onclick="showPrompt('female', 'elvenSorceress')">Elven Sorceress</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'warriorPrincess')">Warrior Princess</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'dwarfShieldmaiden')">Dwarf Shieldmaiden</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'fairy')">Fairy</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'dragonbornSorceress')">Dragonborn Sorceress</button>
+                </div>
+                
+                <div class="prompt-category">
+                    <h3>🌆 Modern</h3>
+                    <button class="prompt-button" onclick="showPrompt('female', 'businessExecutive')">Business Executive</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'doctor')">Doctor</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'detective')">Detective</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'fashionDesigner')">Fashion Designer</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'athlete')">Athlete</button>
+                </div>
+                
+                <div class="prompt-category">
+                    <h3>🚀 Sci-Fi</h3>
+                    <button class="prompt-button" onclick="showPrompt('female', 'spacePilot')">Space Pilot</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'cyberpunkNetrunner')">Cyberpunk Netrunner</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'alienEmpress')">Alien Empress</button>
+                    <button class="prompt-button" onclick="showPrompt('female', 'android')">Android</button>
+                </div>
+                
+                <button class="random-button" onclick="showRandomPrompt('female')">🎲 Random Female</button>
+            </div>
+        </div>
+        
+        <!-- Prompt Display -->
+        <div class="prompt-display" id="promptDisplay" style="display: none;">
+            <h3 style="color: #fbbf24; margin-bottom: 10px;">📝 Generated Prompt</h3>
+            <div class="prompt-text" id="promptText"></div>
+            <button class="copy-button" onclick="copyPrompt()">📋 Copy to Clipboard</button>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats">
+            <h3 style="color: #fbbf24; margin-bottom: 10px;">📊 Prompt Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">Male Prompts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">Female Prompts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">28</div>
+                    <div class="stat-label">Total Prompts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Combinations</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { 
+            maleCharacterPrompts, 
+            femaleCharacterPrompts,
+            getMalePrompt,
+            getFemalePrompt,
+            getRandomMalePrompt,
+            getRandomFemalePrompt
+        } from './framework/ai/CharacterPrompts.js';
+        
+        let currentPrompt = '';
+        
+        // Show specific prompt
+        window.showPrompt = function(gender, type) {
+            const prompt = gender === 'male' ? 
+                maleCharacterPrompts[type] : 
+                femaleCharacterPrompts[type];
+            
+            displayPrompt(prompt);
+        };
+        
+        // Show random prompt
+        window.showRandomPrompt = function(gender) {
+            const prompt = gender === 'male' ? 
+                getRandomMalePrompt() : 
+                getRandomFemalePrompt();
+            
+            displayPrompt(prompt);
+        };
+        
+        // Display prompt
+        function displayPrompt(prompt) {
+            currentPrompt = prompt;
+            const promptDisplay = document.getElementById('promptDisplay');
+            const promptText = document.getElementById('promptText');
+            
+            promptText.textContent = prompt;
+            promptDisplay.style.display = 'block';
+            
+            // Scroll to prompt display
+            promptDisplay.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Copy prompt to clipboard
+        window.copyPrompt = function() {
+            if (currentPrompt) {
+                navigator.clipboard.writeText(currentPrompt).then(() => {
+                    // Show success feedback
+                    const button = event.target;
+                    const originalText = button.textContent;
+                    button.textContent = '✅ Copied!';
+                    button.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.background = '';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy prompt:', err);
+                });
+            }
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (event) => {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case 'c':
+                        if (currentPrompt) {
+                            event.preventDefault();
+                            copyPrompt();
+                        }
+                        break;
+                    case 'r':
+                        event.preventDefault();
+                        showRandomPrompt('male');
+                        break;
+                }
+            }
+            
+            switch(event.key) {
+                case '1':
+                    showRandomPrompt('male');
+                    break;
+                case '2':
+                    showRandomPrompt('female');
+                    break;
+            }
+        });
+        
+        // Initialize with a random prompt
+        setTimeout(() => {
+            showRandomPrompt('male');
+        }, 1000);
+    </script>
+</body>
+</html>

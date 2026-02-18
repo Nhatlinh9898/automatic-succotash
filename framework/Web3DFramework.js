@@ -31,6 +31,10 @@ import {
     VRUISystem,
     ARSystem
 } from './webxr/WebXRSupport.js';
+import {
+    GeminiAIManager,
+    AICharacterGenerator
+} from './ai/AICharacterGenerator.js';
 
 /**
  * Main Web3D Framework Class
@@ -332,6 +336,13 @@ class Web3DFramework {
     }
     
     /**
+     * Create AI character generator
+     */
+    createAICharacterGenerator(apiKey) {
+        return new AICharacterGenerator(this, apiKey);
+    }
+    
+    /**
      * Export framework configuration
      */
     exportConfig() {
@@ -481,7 +492,10 @@ export {
     // WebXR
     WebXRManager,
     VRUISystem,
-    ARSystem
+    ARSystem,
+    // AI
+    GeminiAIManager,
+    AICharacterGenerator
 };
 
 // Default export

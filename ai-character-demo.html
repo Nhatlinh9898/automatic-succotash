@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Character Generator - Web3D Framework</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        #canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            min-width: 350px;
+            max-width: 400px;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+        
+        #characterInfo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 12px;
+            min-width: 300px;
+            max-width: 350px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #a78bfa;
+            font-weight: bold;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #4c1d95;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        .section h3 {
+            margin: 0 0 15px 0;
+            color: #a78bfa;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .character-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+        
+        .character-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+        
+        .character-detail {
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        
+        .character-detail strong {
+            color: #a78bfa;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #fbbf24;
+        }
+        
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ef4444;
+        }
+        
+        .success {
+            background: rgba(34, 197, 94, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #22c55e;
+        }
+        
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .template-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #4c1d95;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .template-button:hover {
+            background: rgba(167, 139, 250, 0.2);
+            border-color: #a78bfa;
+        }
+        
+        .stats {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-family: monospace;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div id="ui">
+        <div class="section">
+            <h3>🤖 AI Character Generator</h3>
+            
+            <div class="input-group">
+                <label for="apiKey">Gemini API Key:</label>
+                <input type="password" id="apiKey" placeholder="Enter your Gemini API key">
+            </div>
+            
+            <div class="input-group">
+                <label for="characterPrompt">Character Description:</label>
+                <textarea id="characterPrompt" placeholder="Describe your character (e.g., 'A brave elven warrior with silver hair and glowing blue eyes')">A brave elven warrior with silver hair and glowing blue eyes</textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>Quick Templates:</label>
+                <div class="template-grid">
+                    <div class="template-button" onclick="setTemplate('A wise old wizard with a long white beard and magical robes')">Wizard</div>
+                    <div class="template-button" onclick="setTemplate('A fierce dragonborn warrior with red scales and heavy armor')">Dragonborn</div>
+                    <div class="template-button" onclick="setTemplate('A graceful elf archer with green clothes and a bow')">Elf Archer</div>
+                    <div class="template-button" onclick="setTemplate('A mysterious rogue in dark leather armor')">Rogue</div>
+                    <div class="template-button" onclick="setTemplate('A noble knight in shining silver armor')">Knight</div>
+                    <div class="template-button" onclick="setTemplate('A futuristic cyborg with glowing mechanical parts')">Cyborg</div>
+                </div>
+            </div>
+            
+            <button class="button" id="generateBtn" onclick="generateCharacter()">🎨 Generate Character</button>
+            <button class="button" id="initBtn" onclick="initializeAI()">🔑 Initialize AI</button>
+            <button class="button" onclick="clearAllCharacters()">🗑️ Clear All</button>
+        </div>
+        
+        <div id="message"></div>
+    </div>
+    
+    <div id="characterInfo">
+        <div class="section">
+            <h3>📋 Generated Characters</h3>
+            <div id="characterList">
+                <p style="text-align: center; color: #999;">No characters generated yet</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats">
+        <div>FPS: <span id="fps">0</span></div>
+        <div>Characters: <span id="characterCount">0</span></div>
+    </div>
+    
+    <script type="module">
+        import Web3DFramework, { Web3DUtils } from './framework/Web3DFramework.js';
+        import { AICharacterGenerator } from './framework/ai/AICharacterGenerator.js';
+        
+        // Initialize framework
+        const framework = new Web3DFramework({
+            canvas: document.getElementById('canvas'),
+            antialias: true,
+            shadows: true
+        });
+        
+        // Create basic scene
+        framework.createBasicScene();
+        
+        // Add fog
+        framework.addFog(0x4c1d95, 10, 100);
+        
+        // AI Character Generator
+        let aiGenerator = null;
+        let generatedCharacters = [];
+        let characterIdCounter = 0;
+        
+        // UI Elements
+        const generateBtn = document.getElementById('generateBtn');
+        const initBtn = document.getElementById('initBtn');
+        const apiKeyInput = document.getElementById('apiKey');
+        const characterPrompt = document.getElementById('characterPrompt');
+        const messageDiv = document.getElementById('message');
+        const characterList = document.getElementById('characterList');
+        
+        // Initialize AI
+        window.initializeAI = async function() {
+            const apiKey = apiKeyInput.value.trim();
+            if (!apiKey) {
+                showMessage('Please enter your Gemini API key', 'error');
+                return;
+            }
+            
+            try {
+                initBtn.disabled = true;
+                initBtn.textContent = '🔄 Initializing...';
+                
+                aiGenerator = new AICharacterGenerator(framework, apiKey);
+                const success = await aiGenerator.init();
+                
+                if (success) {
+                    showMessage('AI initialized successfully! You can now generate characters.', 'success');
+                    generateBtn.disabled = false;
+                    initBtn.textContent = '✅ AI Ready';
+                } else {
+                    showMessage('Failed to initialize AI. Please check your API key.', 'error');
+                    initBtn.disabled = false;
+                    initBtn.textContent = '🔑 Initialize AI';
+                }
+            } catch (error) {
+                console.error('AI initialization error:', error);
+                showMessage('Error initializing AI: ' + error.message, 'error');
+                initBtn.disabled = false;
+                initBtn.textContent = '🔑 Initialize AI';
+            }
+        };
+        
+        // Generate character
+        window.generateCharacter = async function() {
+            if (!aiGenerator) {
+                showMessage('Please initialize AI first', 'error');
+                return;
+            }
+            
+            const prompt = characterPrompt.value.trim();
+            if (!prompt) {
+                showMessage('Please enter a character description', 'error');
+                return;
+            }
+            
+            try {
+                generateBtn.disabled = true;
+                generateBtn.textContent = '🔄 Generating...';
+                
+                // Generate random position
+                const position = new THREE.Vector3(
+                    (Math.random() - 0.5) * 20,
+                    0,
+                    (Math.random() - 0.5) * 20
+                );
+                
+                const character = await aiGenerator.generateCharacter(prompt, position);
+                characterIdCounter++;
+                character.id = `character_${characterIdCounter}`;
+                
+                generatedCharacters.push({
+                    id: character.id,
+                    entity: character,
+                    description: character.userData.characterData
+                });
+                
+                updateCharacterList();
+                showMessage(`Generated character: ${character.userData.characterData.name}`, 'success');
+                
+                // Focus camera on new character
+                const transform = character.components.get('Transform');
+                framework.engine.camera.position.set(
+                    transform.position.x + 5,
+                    transform.position.y + 3,
+                    transform.position.z + 5
+                );
+                framework.engine.camera.lookAt(transform.position);
+                
+            } catch (error) {
+                console.error('Character generation error:', error);
+                showMessage('Error generating character: ' + error.message, 'error');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '🎨 Generate Character';
+            }
+        };
+        
+        // Set template
+        window.setTemplate = function(template) {
+            characterPrompt.value = template;
+        };
+        
+        // Clear all characters
+        window.clearAllCharacters = function() {
+            generatedCharacters.forEach(char => {
+                framework.removeEntity(char.entity.id);
+            });
+            generatedCharacters = [];
+            updateCharacterList();
+            showMessage('All characters cleared', 'success');
+        };
+        
+        // Update character list display
+        function updateCharacterList() {
+            if (generatedCharacters.length === 0) {
+                characterList.innerHTML = '<p style="text-align: center; color: #999;">No characters generated yet</p>';
+                return;
+            }
+            
+            characterList.innerHTML = generatedCharacters.map(char => {
+                const desc = char.description;
+                return `
+                    <div class="character-card">
+                        <div class="character-name">${desc.name}</div>
+                        <div class="character-detail"><strong>Race:</strong> ${desc.race}</div>
+                        <div class="character-detail"><strong>Gender:</strong> ${desc.gender}</div>
+                        <div class="character-detail"><strong>Age:</strong> ${desc.age}</div>
+                        <div class="character-detail"><strong>Build:</strong> ${desc.build}</div>
+                        <div class="character-detail"><strong>Style:</strong> ${desc.clothing.style}</div>
+                        <div class="character-detail"><strong>Personality:</strong> ${desc.personality}</div>
+                        <div class="character-detail"><strong>Special:</strong> ${desc.specialFeatures}</div>
+                        <div class="character-detail"><strong>Backstory:</strong> ${desc.backstory ? desc.backstory.substring(0, 100) + '...' : 'No backstory'}</div>
+                        <button class="button" style="margin-top: 10px; padding: 8px;" onclick="focusCharacter('${char.id}')">🎯 Focus</button>
+                        <button class="button" style="margin-top: 10px; padding: 8px;" onclick="removeCharacter('${char.id}')">❌ Remove</button>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('characterCount').textContent = generatedCharacters.length;
+        }
+        
+        // Focus on character
+        window.focusCharacter = function(characterId) {
+            const character = generatedCharacters.find(char => char.id === characterId);
+            if (character) {
+                const transform = character.entity.components.get('Transform');
+                framework.engine.camera.position.set(
+                    transform.position.x + 3,
+                    transform.position.y + 2,
+                    transform.position.z + 3
+                );
+                framework.engine.camera.lookAt(transform.position);
+            }
+        }
+        
+        // Remove character
+        window.removeCharacter = function(characterId) {
+            const index = generatedCharacters.findIndex(char => char.id === characterId);
+            if (index !== -1) {
+                framework.removeEntity(generatedCharacters[index].entity.id);
+                generatedCharacters.splice(index, 1);
+                updateCharacterList();
+                showMessage('Character removed', 'success');
+            }
+        }
+        
+        // Show message
+        function showMessage(message, type) {
+            messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Update stats
+        function updateStats() {
+            const stats = framework.getStats();
+            document.getElementById('fps').textContent = stats.performance?.fps || 0;
+        }
+        
+        // Setup keyboard controls
+        const inputSystem = framework.getSystem('Input');
+        inputSystem.addCallback('keydown', (event) => {
+            switch(event.code) {
+                case 'KeyG':
+                    if (!generateBtn.disabled) generateCharacter();
+                    break;
+                case 'KeyC':
+                    clearAllCharacters();
+                    break;
+            }
+        });
+        
+        // Update stats every frame
+        setInterval(updateStats, 100);
+        
+        // Start framework
+        framework.start();
+        
+        // Add some initial lighting
+        const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+        pointLight.position.set(10, 10, 10);
+        framework.engine.scene.add(pointLight);
+        
+        const pointLight2 = new THREE.PointLight(0xa78bfa, 0.5, 100);
+        pointLight2.position.set(-10, 10, -10);
+        framework.engine.scene.add(pointLight2);
+        
+        // Instructions
+        console.log('🤖 AI Character Generator Demo');
+        console.log('1. Enter your Gemini API key');
+        console.log('2. Click "Initialize AI"');
+        console.log('3. Describe your character and click "Generate Character"');
+        console.log('4. Use keyboard shortcuts: G - Generate, C - Clear all');
+    </script>
+</body>
+</html>

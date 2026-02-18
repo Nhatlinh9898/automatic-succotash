@@ -9,6 +9,16 @@ import { setupOrbitControls, addMouseInteraction, addKeyboardControls, addMouseM
 import { createCustomAnimation, createLoopAnimation, createComplexAnimation } from './animations.js';
 import { createSky, createSkybox, createGround, createWater } from './environment.js';
 import { createParticleSystem, createRainEffect, createSnowEffect } from './particles_effects.js';
+import { createPathAnimation, createCustomPath, createCircularPath } from './path_animation.js';
+import { createNightSky, createDayNightCycle, createDynamicSkybox, createSun, createClouds } from './sky_effects.js';
+import { createWeatherSystem, integrateRealWeather } from './weather_system.js';
+import { createForceInteraction, createShadowProjection, createFlameEffect, createAIInteraction, createFireworkEffect } from './interaction_effects.js';
+import { createMirrorEffect, createLiquidSurface, createDynamicBackground, createAudioReactiveEffect, createDynamicLighting, createHologramEffect } from './advanced_effects.js';
+import { createAIChatIntegration, createSmartMovement, createProceduralGeneration, createLearningBehavior } from './ai_integration.js';
+import { createResponsiveSystem, createTouchControls, createAdaptiveUI, createPerformanceOptimizer } from './responsive_system.js';
+import { createExplosionSystem, createClothSimulation, createOceanSimulation, createRigidBodySystem } from './physics_system.js';
+import { createTextureManager, createDynamicTextureSystem, createPBRTextureSystem, createProceduralTextureSystem, createVideoTextureSystem } from './texture_system.js';
+import { createOutfitSystem, createClothRiggingSystem, createLayeredClothingSystem, createClothingAnimationSystem, createClothingPhysicsIntegration } from './clothing_system.js';
 
 // Export all functions
 export {
@@ -45,7 +55,70 @@ export {
     // Particles & Effects
     createParticleSystem,
     createRainEffect,
-    createSnowEffect
+    createSnowEffect,
+    
+    // Path Animation
+    createPathAnimation,
+    createCustomPath,
+    createCircularPath,
+    
+    // Sky Effects
+    createNightSky,
+    createDayNightCycle,
+    createDynamicSkybox,
+    createSun,
+    createClouds,
+    
+    // Weather System
+    createWeatherSystem,
+    integrateRealWeather,
+    
+    // Interaction Effects
+    createForceInteraction,
+    createShadowProjection,
+    createFlameEffect,
+    createAIInteraction,
+    createFireworkEffect,
+    
+    // Advanced Effects
+    createMirrorEffect,
+    createLiquidSurface,
+    createDynamicBackground,
+    createAudioReactiveEffect,
+    createDynamicLighting,
+    createHologramEffect,
+    
+    // AI Integration
+    createAIChatIntegration,
+    createSmartMovement,
+    createProceduralGeneration,
+    createLearningBehavior,
+    
+    // Responsive System
+    createResponsiveSystem,
+    createTouchControls,
+    createAdaptiveUI,
+    createPerformanceOptimizer,
+    
+    // Physics System
+    createExplosionSystem,
+    createClothSimulation,
+    createOceanSimulation,
+    createRigidBodySystem,
+    
+    // Texture System
+    createTextureManager,
+    createDynamicTextureSystem,
+    createPBRTextureSystem,
+    createProceduralTextureSystem,
+    createVideoTextureSystem,
+    
+    // Clothing System
+    createOutfitSystem,
+    createClothRiggingSystem,
+    createLayeredClothingSystem,
+    createClothingAnimationSystem,
+    createClothingPhysicsIntegration
 };
 
 // Example usage:

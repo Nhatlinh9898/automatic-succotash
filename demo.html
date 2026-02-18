@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3D Framework Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        #canvas {
+            display: block;
+        }
+        
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            min-width: 200px;
+        }
+        
+        #stats {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .button:hover {
+            background: #0056b3;
+        }
+        
+        .button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        
+        .section {
+            margin-bottom: 15px;
+        }
+        
+        .section h3 {
+            margin: 0 0 10px 0;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div id="ui">
+        <div class="section">
+            <h3>Web3D Framework Demo</h3>
+            <button class="button" onclick="createCube()">Add Cube</button>
+            <button class="button" onclick="createSphere()">Add Sphere</button>
+            <button class="button" onclick="createParticleSystem()">Add Particles</button>
+            <button class="button" onclick="togglePhysics()">Toggle Physics</button>
+            <button class="button" onclick="clearScene()">Clear Scene</button>
+        </div>
+        
+        <div class="section">
+            <h3>WebXR</h3>
+            <button class="button" id="vrButton" onclick="startVR()">Start VR</button>
+            <button class="button" id="arButton" onclick="startAR()">Start AR</button>
+        </div>
+        
+        <div class="section">
+            <h3>Performance</h3>
+            <button class="button" onclick="toggleLOD()">Toggle LOD</button>
+            <button class="button" onclick="toggleFrustumCulling()">Toggle Culling</button>
+        </div>
+    </div>
+    
+    <div id="stats">
+        <div>FPS: <span id="fps">0</span></div>
+        <div>Frame Time: <span id="frameTime">0</span>ms</div>
+        <div>Draw Calls: <span id="drawCalls">0</span></div>
+        <div>Triangles: <span id="triangles">0</span></div>
+        <div>Entities: <span id="entities">0</span></div>
+        <div>Memory: <span id="memory">0</span>MB</div>
+    </div>
+    
+    <script type="module">
+        import Web3DFramework, { Web3DUtils } from './framework/Web3DFramework.js';
+        
+        // Initialize framework
+        const framework = new Web3DFramework({
+            canvas: document.getElementById('canvas'),
+            antialias: true,
+            shadows: true
+        });
+        
+        // Create basic scene
+        framework.createBasicScene();
+        
+        // Add fog
+        framework.addFog(0x000000, 10, 100);
+        
+        // Global variables
+        let physicsEnabled = true;
+        let lodEnabled = true;
+        let frustumCullingEnabled = true;
+        let entityCount = 0;
+        
+        // UI Elements
+        const vrButton = document.getElementById('vrButton');
+        const arButton = document.getElementById('arButton');
+        
+        // Check WebXR support
+        const webxrSystem = framework.getSystem('WebXR');
+        if (webxrSystem && webxrSystem.isSupported) {
+            vrButton.disabled = false;
+            arButton.disabled = false;
+        } else {
+            vrButton.disabled = true;
+            arButton.disabled = true;
+            vrButton.textContent = 'VR Not Supported';
+            arButton.textContent = 'AR Not Supported';
+        }
+        
+        // Create cube entity
+        window.createCube = function() {
+            const geometry = Web3DUtils.createPrimitive('box', { width: 2, height: 2, depth: 2 });
+            const material = Web3DUtils.createMaterial({ 
+                color: Math.random() * 0xffffff,
+                roughness: 0.3,
+                metalness: 0.7
+            });
+            
+            const entity = framework.createEntity([
+                new framework.getComponent('Transform')(
+                    new THREE.Vector3(
+                        (Math.random() - 0.5) * 20,
+                        Math.random() * 10 + 5,
+                        (Math.random() - 0.5) * 20
+                    ),
+                    new THREE.Euler(
+                        Math.random() * Math.PI,
+                        Math.random() * Math.PI,
+                        Math.random() * Math.PI
+                    ),
+                    new THREE.Vector3(1, 1, 1)
+                ),
+                new framework.getComponent('Mesh')(geometry, material),
+                new framework.getComponent('Physics')({ mass: 1, friction: 0.1 })
+            ]);
+            
+            entityCount++;
+            updateStats();
+        };
+        
+        // Create sphere entity
+        window.createSphere = function() {
+            const geometry = Web3DUtils.createPrimitive('sphere', { radius: 1 });
+            const material = Web3DUtils.createMaterial({ 
+                color: Math.random() * 0xffffff,
+                roughness: 0.1,
+                metalness: 0.9
+            });
+            
+            const entity = framework.createEntity([
+                new framework.getComponent('Transform')(
+                    new THREE.Vector3(
+                        (Math.random() - 0.5) * 20,
+                        Math.random() * 10 + 5,
+                        (Math.random() - 0.5) * 20
+                    ),
+                    new THREE.Euler(0, 0, 0),
+                    new THREE.Vector3(1, 1, 1)
+                ),
+                new framework.getComponent('Mesh')(geometry, material),
+                new framework.getComponent('Physics')({ mass: 0.5, friction: 0.2 })
+            ]);
+            
+            entityCount++;
+            updateStats();
+        };
+        
+        // Create particle system
+        window.createParticleSystem = function() {
+            const particles = Web3DUtils.createParticleSystem({
+                count: 1000,
+                area: 50,
+                height: 30,
+                size: 0.1,
+                opacity: 0.8
+            });
+            
+            framework.engine.scene.add(particles);
+            
+            // Animate particles
+            const animateParticles = function() {
+                particles.rotation.y += 0.001;
+                
+                const positions = particles.geometry.attributes.position.array;
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i + 1] += Math.sin(Date.now() * 0.001 + i) * 0.01;
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+            };
+            
+            // Add to animation loop
+            framework.engine.systems.get('Performance').update = function(deltaTime) {
+                animateParticles();
+            };
+        };
+        
+        // Toggle physics
+        window.togglePhysics = function() {
+            physicsEnabled = !physicsEnabled;
+            const physicsSystem = framework.getSystem('Physics');
+            if (physicsSystem) {
+                physicsSystem.setEnabled(physicsEnabled);
+            }
+        };
+        
+        // Toggle LOD
+        window.toggleLOD = function() {
+            lodEnabled = !lodEnabled;
+            const lodSystem = framework.getSystem('LOD');
+            if (lodSystem) {
+                lodSystem.setEnabled(lodEnabled);
+            }
+        };
+        
+        // Toggle frustum culling
+        window.toggleFrustumCulling = function() {
+            frustumCullingEnabled = !frustumCullingEnabled;
+            const frustumSystem = framework.getSystem('FrustumCulling');
+            if (frustumSystem) {
+                frustumSystem.setEnabled(frustumCullingEnabled);
+            }
+        };
+        
+        // Clear scene
+        window.clearScene = function() {
+            // Remove all entities
+            const entities = Array.from(framework.engine.entities.keys());
+            entities.forEach(id => framework.removeEntity(id));
+            entityCount = 0;
+            updateStats();
+        };
+        
+        // Start VR
+        window.startVR = async function() {
+            try {
+                const webxrSystem = framework.getSystem('WebXR');
+                await webxrSystem.startSession('immersive-vr');
+                
+                // Setup VR UI
+                const vruiSystem = framework.getSystem('VRUI');
+                vruiSystem.init(framework.engine.scene, framework.engine.camera);
+                
+                vrButton.textContent = 'Stop VR';
+                vrButton.onclick = stopVR;
+            } catch (error) {
+                console.error('Failed to start VR:', error);
+            }
+        };
+        
+        // Stop VR
+        window.stopVR = function() {
+            const webxrSystem = framework.getSystem('WebXR');
+            webxrSystem.endSession();
+            
+            vrButton.textContent = 'Start VR';
+            vrButton.onclick = startVR;
+        };
+        
+        // Start AR
+        window.startAR = async function() {
+            try {
+                const arSystem = framework.getSystem('AR');
+                await arSystem.startARSession();
+                
+                arButton.textContent = 'Stop AR';
+                arButton.onclick = stopAR;
+            } catch (error) {
+                console.error('Failed to start AR:', error);
+            }
+        };
+        
+        // Stop AR
+        window.stopAR = function() {
+            const arSystem = framework.getSystem('AR');
+            arSystem.dispose();
+            
+            arButton.textContent = 'Start AR';
+            arButton.onclick = startAR;
+        };
+        
+        // Update stats display
+        function updateStats() {
+            const stats = framework.getStats();
+            
+            document.getElementById('fps').textContent = stats.performance?.fps || 0;
+            document.getElementById('frameTime').textContent = stats.performance?.frameTime?.toFixed(2) || 0;
+            document.getElementById('drawCalls').textContent = stats.engine?.drawCalls || 0;
+            document.getElementById('triangles').textContent = stats.engine?.triangles || 0;
+            document.getElementById('entities').textContent = entityCount;
+            document.getElementById('memory').textContent = stats.memory?.used?.toFixed(2) || 0;
+        }
+        
+        // Setup keyboard controls
+        const inputSystem = framework.getSystem('Input');
+        inputSystem.addCallback('keydown', (event) => {
+            switch(event.code) {
+                case 'Space':
+                    createCube();
+                    break;
+                case 'KeyP':
+                    togglePhysics();
+                    break;
+                case 'KeyC':
+                    clearScene();
+                    break;
+                case 'KeyV':
+                    if (!vrButton.disabled) startVR();
+                    break;
+            }
+        });
+        
+        // Update stats every frame
+        setInterval(updateStats, 100);
+        
+        // Start framework
+        framework.start();
+        
+        // Create some initial objects
+        setTimeout(() => {
+            createCube();
+            createSphere();
+            createSphere();
+        }, 1000);
+    </script>
+</body>
+</html>

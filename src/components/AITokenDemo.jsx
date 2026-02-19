@@ -1,16 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import AIService from '../services/aiService';
+import React, { useState, useEffect, useRef } from 'react';
+import aiService from '../services/aiService';
 import TokenManager from './TokenManager';
 import './AITokenDemo.css';
 
 const AITokenDemo = () => {
-  const [aiService] = useState(() => {
-    const service = new AIService();
-    service.onStatusUpdate((status) => {
-      setProcessingStatus(status);
-    });
-    return service;
-  });
+  const aiServiceRef = useRef(aiService);
 
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
@@ -26,15 +20,15 @@ const AITokenDemo = () => {
   useEffect(() => {
     // Update token usage when prompt changes
     if (prompt) {
-      const estimatedTokens = aiService.estimateTokenCount(prompt);
+      const estimatedTokens = aiServiceRef.current.estimateTokenCount(prompt);
       setTokenUsage(estimatedTokens);
     } else {
       setTokenUsage(0);
     }
-  }, [prompt, aiService]);
+  }, [prompt]);
 
   const handleTokenSettingsChange = (settings) => {
-    aiService.updateTokenSettings(settings);
+    aiServiceRef.current.updateTokenSettings(settings);
   };
 
   const handleSubmit = async (e) => {
@@ -45,7 +39,7 @@ const AITokenDemo = () => {
     setResponse('');
 
     try {
-      const result = await aiService.generatePrompt(prompt);
+      const result = await aiServiceRef.current.generatePrompt(prompt);
       setResponse(result);
     } catch (error) {
       setResponse(`Lỗi: ${error.message}`);

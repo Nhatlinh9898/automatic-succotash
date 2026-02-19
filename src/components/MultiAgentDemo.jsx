@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import AgentSystem from '../services/agentSystem';
 import SubAgentSystem from '../services/subAgentSystem';
 import AgentManager from './AgentManager';
 import SubAgentManager from './SubAgentManager';
 import TokenManager from './TokenManager';
-import AIService from '../services/aiService';
+import aiService from '../services/aiService';
 import './MultiAgentDemo.css';
 
 const MultiAgentDemo = () => {
@@ -15,7 +15,7 @@ const MultiAgentDemo = () => {
   const [selectedSubAgent, setSelectedSubAgent] = useState(null);
   const [tokenUsage, setTokenUsage] = useState(0);
   const [taskHistory, setTaskHistory] = useState([]);
-  const [aiService] = useState(() => new AIService());
+  const aiServiceRef = useRef(aiService);
 
   // Sample prompts for different agents and sub-agents
   const samplePrompts = {
@@ -83,7 +83,7 @@ const MultiAgentDemo = () => {
   };
 
   const handleTokenSettingsChange = (settings) => {
-    aiService.updateTokenSettings(settings);
+    aiServiceRef.current.updateTokenSettings(settings);
   };
 
   const handleSubmit = async (e) => {
@@ -132,12 +132,12 @@ const MultiAgentDemo = () => {
   // Update token usage
   React.useEffect(() => {
     if (prompt) {
-      const estimatedTokens = aiService.estimateTokenCount(prompt);
+      const estimatedTokens = aiServiceRef.current.estimateTokenCount(prompt);
       setTokenUsage(estimatedTokens);
     } else {
       setTokenUsage(0);
     }
-  }, [prompt, aiService]);
+  }, [prompt]);
 
   return (
     <div className="multi-agent-demo">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import Header from './components/Header'
+import Sidebar from './components/Sidebar'
 import PromptInput from './components/PromptInput'
 import ResponseDisplay from './components/ResponseDisplay'
 import History from './components/History'
@@ -65,25 +66,32 @@ function AppContent() {
         maxTokens: settings.maxTokens
       })
       
-      setResponse(result)
-      
-      // Save to history if auto-save is enabled
-      if (settings.autoSave) {
-        const historyItem = {
-          id: Date.now(),
-          prompt: promptText,
-          response: result,
-          timestamp: new Date().toISOString(),
-          settings: { model: settings.model }
-        }
+      // Ensure result is not undefined or null
+      if (result) {
+        setResponse(result)
         
-        const newHistory = [historyItem, ...history].slice(0, 100) // Keep last 100 items
-        setHistory(newHistory)
-        localStorage.setItem('ai-prompt-history', JSON.stringify(newHistory))
+        // Save to history if auto-save is enabled
+        if (settings.autoSave) {
+          const historyItem = {
+            id: Date.now(),
+            prompt: promptText,
+            response: result,
+            timestamp: new Date().toISOString(),
+            settings: { model: settings.model }
+          }
+          
+          const newHistory = [historyItem, ...history].slice(0, 100) // Keep last 100 items
+          setHistory(newHistory)
+          localStorage.setItem('ai-prompt-history', JSON.stringify(newHistory))
+        }
+      } else {
+        setError('No response received from AI service. Please try again.')
       }
       
     } catch (err) {
-      setError(err.message || 'Failed to generate response. Please try again.')
+      console.error('Generate prompt error:', err)
+      const errorMessage = err?.message || err?.toString() || 'Failed to generate response. Please try again.'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -120,6 +128,7 @@ function AppContent() {
   return (
     <div className="app">
       <Header activeTab={activeTab} />
+      <Sidebar />
       <main className="app-main">
         <Routes>
           <Route path="/" element={
@@ -178,7 +187,7 @@ function AppContent() {
 function App() {
   return (
     <ErrorBoundary>
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AppContent />
       </Router>
     </ErrorBoundary>

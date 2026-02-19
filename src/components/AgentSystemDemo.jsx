@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createAIChatIntegration, createSmartMovement, createLearningBehavior } from '../../library/index.js';
-import AIService from '../services/aiService';
+import aiService from '../services/aiService';
 import './AgentSystemDemo.css';
 
 const AgentSystemDemo = () => {
@@ -9,7 +9,7 @@ const AgentSystemDemo = () => {
   const [agentMessage, setAgentMessage] = useState('');
   const [systemStatus, setSystemStatus] = useState('idle');
   const [logs, setLogs] = useState([]);
-  const aiServiceRef = useRef(new AIService());
+  const aiServiceRef = useRef(aiService);
   
   const addLog = (message, type = 'info') => {
     const timestamp = new Date().toLocaleTimeString();

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import AIService from '../services/aiService';
+import aiService from '../services/aiService';
 import './AICharacterGenerator.css';
 
 const AICharacterGenerator = () => {
-  const [aiService] = useState(() => new AIService());
+  const aiServiceRef = useRef(aiService);
   const [characterType, setCharacterType] = useState('fantasy');
   const [characterTraits, setCharacterTraits] = useState({
     personality: '',
@@ -79,7 +79,7 @@ const AICharacterGenerator = () => {
         prompt += `\n\nAdditional requirements: ${customPrompt}`;
       }
 
-      const result = await aiService.generatePrompt(prompt);
+      const result = await aiServiceRef.current.generatePrompt(prompt);
       
       const character = parseCharacterResponse(result);
       setGeneratedCharacter(character);

@@ -4,12 +4,12 @@ import RequestQueueManager from './requestQueueManager.js';
 class AIService {
   constructor() {
     // Configure your AI API endpoint here - using relative URLs for proxy
-    this.apiEndpoint = process.env.REACT_APP_AI_API_ENDPOINT || '/api/ai';
-    this.batchEndpoint = process.env.REACT_APP_AI_BATCH_ENDPOINT || '/api/ai/batch';
-    this.agentsEndpoint = process.env.REACT_APP_AI_AGENTS_ENDPOINT || '/api/agents';
-    this.servicesEndpoint = process.env.REACT_APP_AI_SERVICES_ENDPOINT || '/api/services/status';
-    this.libraryEndpoint = process.env.REACT_APP_AI_LIBRARY_ENDPOINT || '/api/library';
-    this.apiKey = process.env.REACT_APP_AI_API_KEY || '';
+    this.apiEndpoint = (typeof process !== 'undefined' && process.env.REACT_APP_AI_API_ENDPOINT) || '/api/ai';
+    this.batchEndpoint = (typeof process !== 'undefined' && process.env.REACT_APP_AI_BATCH_ENDPOINT) || '/api/ai/batch';
+    this.agentsEndpoint = (typeof process !== 'undefined' && process.env.REACT_APP_AI_AGENTS_ENDPOINT) || '/api/agents';
+    this.servicesEndpoint = (typeof process !== 'undefined' && process.env.REACT_APP_AI_SERVICES_ENDPOINT) || '/api/services/status';
+    this.libraryEndpoint = (typeof process !== 'undefined' && process.env.REACT_APP_AI_LIBRARY_ENDPOINT) || '/api/library';
+    this.apiKey = (typeof process !== 'undefined' && process.env.REACT_APP_AI_API_KEY) || '';
     
     // Initialize request queue manager
     this.queueManager = new RequestQueueManager({

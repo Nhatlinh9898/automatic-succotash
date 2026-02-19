@@ -1,6 +1,47 @@
 import React, { useState, useEffect, useRef } from 'react';
+import * as THREE from 'three';
 import * as ThreeJSUtils from '../../library/index.js';
 import './ShaderEditor.css';
+
+// Define default shaders before component
+const defaultVertexShader = `
+varying vec2 vUv;
+varying vec3 vNormal;
+varying vec3 vPosition;
+
+void main() {
+  vUv = uv;
+  vNormal = normalize(normalMatrix * normal);
+  vPosition = position;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+
+const defaultFragmentShader = `
+uniform float time;
+uniform vec2 resolution;
+uniform vec3 color;
+uniform float intensity;
+
+varying vec2 vUv;
+varying vec3 vNormal;
+varying vec3 vPosition;
+
+void main() {
+  vec2 uv = vUv;
+  
+  // Basic color with lighting
+  vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+  float diff = max(dot(vNormal, lightDir), 0.0);
+  vec3 diffuse = diff * color;
+  
+  // Add some animation
+  float wave = sin(uv.x * 10.0 + time) * 0.1;
+  vec3 finalColor = diffuse * intensity + wave;
+  
+  gl_FragColor = vec4(finalColor, 1.0);
+}
+`;
 
 const ShaderEditor = () => {
   const mountRef = useRef(null);
@@ -19,45 +60,6 @@ const ShaderEditor = () => {
   const [selectedPreset, setSelectedPreset] = useState('basic');
   const [customUniforms, setCustomUniforms] = useState([]);
   
-  const defaultVertexShader = `
-varying vec2 vUv;
-varying vec3 vNormal;
-varying vec3 vPosition;
-
-void main() {
-    vUv = uv;
-    vNormal = normalize(normalMatrix * normal);
-    vPosition = position;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-  `;
-
-  const defaultFragmentShader = `
-uniform float time;
-uniform vec2 resolution;
-uniform vec3 color;
-uniform float intensity;
-
-varying vec2 vUv;
-varying vec3 vNormal;
-varying vec3 vPosition;
-
-void main() {
-    vec2 uv = vUv;
-    
-    // Basic color with lighting
-    vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
-    float diff = max(dot(vNormal, lightDir), 0.0);
-    vec3 diffuse = diff * color;
-    
-    // Add some animation
-    float wave = sin(uv.x * 10.0 + time) * 0.1;
-    vec3 finalColor = diffuse * intensity + wave;
-    
-    gl_FragColor = vec4(finalColor, 1.0);
-}
-  `;
-
   const shaderPresets = [
     {
       id: 'basic',

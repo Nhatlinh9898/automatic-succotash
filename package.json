@@ -48,17 +48,20 @@
   },
   "homepage": "https://github.com/Nhatlinh9898/automatic-succotash#readme",
   "dependencies": {
-    "concurrently": "^9.2.1",
+    "@google-cloud/text-to-speech": "^5.1.0",
+    "@tensorflow-models/posenet": "^2.2.2",
+    "@tensorflow/tfjs": "^4.10.0",
     "cannon-es": "^0.20.0",
+    "concurrently": "^9.2.1",
     "dat.gui": "^0.7.9",
+    "elevenlabs-api": "^1.0.0",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
+    "node-gtts": "^2.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0",
-    "three": "^0.158.0",
-    "@tensorflow-models/posenet": "^2.2.2",
-    "@tensorflow/tfjs": "^4.10.0"
+    "three": "^0.158.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.0",

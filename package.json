@@ -15,6 +15,10 @@
     "dev:mc3d": "vite --config vite.mc3d.config.js",
     "setup-env": "node setup-env.js",
     "copy-env": "cp .env.setup .env",
+    "process-guide": "echo '📋 See SETUP-GUIDE.md for complete setup process'",
+    "ai-workflow": "echo '🤖 See AI-WORKFLOW.md for AI processing details'",
+    "process-chart": "echo '📊 See PROCESS-CHART.md for complete flowchart'",
+    "quick-start": "echo '⚡ See QUICK-START.md for 5-minute setup'",
     "lint": "eslint library/**/*.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

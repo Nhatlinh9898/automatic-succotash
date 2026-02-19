@@ -14,6 +14,7 @@ const Header = ({ activeTab, onTabChange }) => {
     { id: 'terrain', label: 'Terrain', icon: '🏔️' },
     { id: 'audio-visualizer', label: 'Audio', icon: '🎵' },
     { id: 'shader-editor', label: 'Shader Editor', icon: '🎨' },
+    { id: 'framework-integration', label: 'Framework', icon: '🚀' },
     { id: 'characters', label: 'Characters', icon: '👤' },
     { id: 'history', label: 'History', icon: '📝' },
     { id: 'settings', label: 'Settings', icon: '⚙️' }

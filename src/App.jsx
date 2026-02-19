@@ -16,6 +16,7 @@ import RealtimeCollaboration from './components/RealtimeCollaboration'
 import TerrainGenerator from './components/TerrainGenerator'
 import AudioVisualizer from './components/AudioVisualizer'
 import ShaderEditor from './components/ShaderEditor'
+import FrameworkIntegration from './components/FrameworkIntegration'
 import aiService from './services/aiService'
 import './App.css'
 
@@ -139,6 +140,8 @@ function App() {
         return <AudioVisualizer />
       case 'shader-editor':
         return <ShaderEditor />
+      case 'framework-integration':
+        return <FrameworkIntegration />
       default:
         return null
     }

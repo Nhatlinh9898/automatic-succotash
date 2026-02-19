@@ -19,6 +19,8 @@
     "ai-workflow": "echo '🤖 See AI-WORKFLOW.md for AI processing details'",
     "process-chart": "echo '📊 See PROCESS-CHART.md for complete flowchart'",
     "quick-start": "echo '⚡ See QUICK-START.md for 5-minute setup'",
+    "framework": "concurrently \"npm run ai-server\" \"npm run dev\"",
+    "integration": "powershell -ExecutionPolicy Bypass -File start-integration.ps1",
     "lint": "eslint library/**/*.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

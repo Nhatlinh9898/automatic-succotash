@@ -9,8 +9,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "serve": "python -m http.server 8080",
-    "ai-server": "node src/server/ai-server.js",
+    "ai-server": "node server.js",
+    "mc-presenter": "concurrently \"npm run ai-server\" \"python -m http.server 8080\"",
     "dev:full": "concurrently \"npm run dev\" \"npm run ai-server\"",
+    "dev:mc3d": "vite --config vite.mc3d.config.js",
+    "setup-env": "node setup-env.js",
+    "copy-env": "cp .env.setup .env",
     "lint": "eslint library/**/*.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -42,6 +46,7 @@
     "express": "^5.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0",
     "three": "^0.158.0"
   },
   "devDependencies": {

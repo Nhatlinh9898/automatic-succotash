@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D MC Presenter PRO</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #111; font-family: Arial, sans-serif; }
+    
+    #chatBox {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 300px;
+      padding: 10px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+    
+    #chatInput {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid #444;
+    }
+    
+    #controlPanel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 200px;
+      padding: 15px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 8px;
+      border: 1px solid #333;
+      color: white;
+    }
+    
+    .control-btn {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .control-btn:hover {
+      background: #1d4ed8;
+    }
+    
+    .control-btn.active {
+      background: #16a34a;
+    }
+    
+    #status {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+    }
+    
+    .loading {
+      color: #fbbf24;
+    }
+    
+    .success {
+      color: #34d399;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="status">Status: <span id="statusText">Loading...</span></div>
+  
+  <div id="controlPanel">
+    <h3>MC Controls</h3>
+    <button class="control-btn" onclick="playAnimation('Idle')">🧍 Idle</button>
+    <button class="control-btn" onclick="playAnimation('Talk')">💬 Talk</button>
+    <button class="control-btn" onclick="playAnimation('Present')">👋 Present</button>
+    <button class="control-btn" onclick="playAnimation('Gesture')">🤚 Gesture</button>
+    <button class="control-btn" onclick="toggleCamera()">📷 Camera</button>
+    <button class="control-btn" onclick="showProduct()">📦 Show Product</button>
+  </div>
+
+  <div id="chatBox">
+    <input id="chatInput" placeholder="Nhập lệnh hoặc câu hỏi..." />
+  </div>
+
+  <script src="https://unpkg.com/three/build/three.min.js"></script>
+  <script src="https://unpkg.com/three/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="mc-presenter.js"></script>
+</body>
+</html>

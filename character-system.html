@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D MC Character System PRO</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #111; font-family: Arial, sans-serif; }
+    
+    /* Character Selection Panel */
+    #characterPanel {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 280px;
+      padding: 15px;
+      background: rgba(0,0,0,0.9);
+      border-radius: 12px;
+      border: 1px solid #333;
+      color: white;
+    }
+    
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 10px 0;
+    }
+    
+    .character-card {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .character-card:hover {
+      transform: scale(1.05);
+      border-color: #fbbf24;
+    }
+    
+    .character-card.selected {
+      border-color: #10b981;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+    
+    .character-card .avatar {
+      font-size: 24px;
+    }
+    
+    .character-card .name {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.7);
+      padding: 4px;
+      font-size: 10px;
+      text-align: center;
+    }
+    
+    /* Wardrobe Panel */
+    #wardrobePanel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 250px;
+      padding: 15px;
+      background: rgba(0,0,0,0.9);
+      border-radius: 12px;
+      border: 1px solid #333;
+      color: white;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .wardrobe-category {
+      margin: 15px 0;
+    }
+    
+    .wardrobe-category h4 {
+      margin: 0 0 10px 0;
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    
+    .outfit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    
+    .outfit-item {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      font-size: 12px;
+    }
+    
+    .outfit-item:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: #fbbf24;
+    }
+    
+    .outfit-item.selected {
+      background: #10b981;
+      border-color: #10b981;
+    }
+    
+    .outfit-item .icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    
+    /* Control Panel */
+    #controlPanel {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 200px;
+      padding: 15px;
+      background: rgba(0,0,0,0.9);
+      border-radius: 12px;
+      border: 1px solid #333;
+      color: white;
+    }
+    
+    .control-btn {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 12px;
+    }
+    
+    .control-btn:hover {
+      background: #1d4ed8;
+    }
+    
+    .control-btn.active {
+      background: #16a34a;
+    }
+    
+    /* Chat Box */
+    #chatBox {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 300px;
+      padding: 10px;
+      background: rgba(0,0,0,0.9);
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+    
+    #chatInput {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid #444;
+    }
+    
+    /* Status */
+    #status {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 15px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    #status.show {
+      opacity: 1;
+    }
+    
+    .loading { color: #fbbf24; }
+    .success { color: #34d399; }
+    .error { color: #ef4444; }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="status">Status: <span id="statusText">Loading...</span></div>
+  
+  <!-- Character Selection Panel -->
+  <div id="characterPanel">
+    <h3>👥 Characters</h3>
+    <div class="character-grid" id="characterGrid">
+      <!-- Characters will be populated here -->
+    </div>
+    <div style="margin-top: 10px; font-size: 12px; opacity: 0.7;">
+      Current: <span id="currentCharacter">None</span>
+    </div>
+  </div>
+
+  <!-- Wardrobe Panel -->
+  <div id="wardrobePanel">
+    <h3>👗 Wardrobe</h3>
+    
+    <div class="wardrobe-category">
+      <h4>👚 Outfits</h4>
+      <div class="outfit-grid" id="outfitGrid">
+        <!-- Outfits will be populated here -->
+      </div>
+    </div>
+    
+    <div class="wardrobe-category">
+      <h4>💄 Hair Styles</h4>
+      <div class="outfit-grid" id="hairGrid">
+        <!-- Hair styles will be populated here -->
+      </div>
+    </div>
+    
+    <div class="wardrobe-category">
+      <h4>👠 Accessories</h4>
+      <div class="outfit-grid" id="accessoryGrid">
+        <!-- Accessories will be populated here -->
+      </div>
+    </div>
+    
+    <div class="wardrobe-category">
+      <h4>🎨 Colors</h4>
+      <div class="outfit-grid" id="colorGrid">
+        <!-- Color options will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Control Panel -->
+  <div id="controlPanel">
+    <h3>🎮 Controls</h3>
+    <button class="control-btn" onclick="playAnimation('Idle')">🧍 Idle</button>
+    <button class="control-btn" onclick="playAnimation('Talk')">💬 Talk</button>
+    <button class="control-btn" onclick="playAnimation('Present')">👋 Present</button>
+    <button class="control-btn" onclick="playAnimation('Gesture')">🤚 Gesture</button>
+    <button class="control-btn" onclick="playAnimation('Walk')">🚶 Walk</button>
+    <button class="control-btn" onclick="playAnimation('Dance')">💃 Dance</button>
+    <button class="control-btn" onclick="toggleCamera()">📷 Camera</button>
+    <button class="control-btn" onclick="randomizeOutfit()">🎲 Random</button>
+  </div>
+
+  <div id="chatBox">
+    <input id="chatInput" placeholder="Nhập lệnh hoặc câu hỏi..." />
+  </div>
+
+  <script src="https://unpkg.com/three/build/three.min.js"></script>
+  <script src="https://unpkg.com/three/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="character-system.js"></script>
+</body>
+</html>

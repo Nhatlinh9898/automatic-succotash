@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D MC Presenter Demo</title>
+  <style>
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: Arial, sans-serif;
+    }
+    
+    .demo-info {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: white;
+      background: rgba(0,0,0,0.7);
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 600px;
+    }
+    
+    .demo-info h1 {
+      margin-top: 0;
+      color: #fbbf24;
+    }
+    
+    .demo-info .step {
+      margin: 15px 0;
+      padding: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      text-align: left;
+    }
+    
+    .demo-info .code {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .demo-button {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+      transition: background 0.3s;
+    }
+    
+    .demo-button:hover {
+      background: #059669;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-info">
+    <h1>🎭 3D MC Presenter PRO</h1>
+    <p>Chào mừng bạn đến với hệ thống MC ảo 3D chuyên nghiệp!</p>
+    
+    <div class="step">
+      <strong>📁 Bước 1: Chuẩn bị model 3D</strong>
+      <div class="code">
+        Đặt file model vào thư mục gốc:<br>
+        • mc_host.glb (Model MC 3D)<br>
+        • product.glb (Sản phẩm 3D - tùy chọn)
+      </div>
+    </div>
+    
+    <div class="step">
+      <strong>🔑 Bước 2: Cấu hình API</strong>
+      <div class="code">
+        Copy .env.example → .env<br>
+        Thêm API keys của bạn
+      </div>
+    </div>
+    
+    <div class="step">
+      <strong>🚀 Bước 3: Khởi động</strong>
+      <div class="code">
+        npm install<br>
+        npm run mc-presenter
+      </div>
+    </div>
+    
+    <div class="step">
+      <strong>🌐 Bước 4: Mở trình duyệt</strong>
+      <div class="code">
+        http://localhost:3001
+      </div>
+    </div>
+    
+    <button class="demo-button" onclick="window.location.href='/mc-presenter.html'">
+      🎬 Mở 3D MC Presenter
+    </button>
+    
+    <button class="demo-button" onclick="window.open('/README-MC-Presenter.md', '_blank')">
+      📖 Xem Hướng dẫn
+    </button>
+  </div>
+
+</body>
+</html>

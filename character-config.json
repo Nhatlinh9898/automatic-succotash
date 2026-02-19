@@ -1,0 +1,392 @@
+{
+  "characters": {
+    "female1": {
+      "id": "female1",
+      "name": "Linh",
+      "avatar": "👩‍💼",
+      "modelPath": "characters/female1.glb",
+      "defaultOutfit": "casual",
+      "personality": "professional",
+      "voice": "female1",
+      "description": "MC chuyên nghiệp, trang nhã",
+      "animations": ["Idle", "Talk", "Present", "Gesture", "Walk", "Dance"],
+      "availableOutfits": ["casual", "formal", "elegant", "traditional"],
+      "skinTone": "#ffdbac",
+      "height": 1.65
+    },
+    "female2": {
+      "id": "female2",
+      "name": "Mai",
+      "avatar": "👩‍🎨",
+      "modelPath": "characters/female2.glb",
+      "defaultOutfit": "creative",
+      "personality": "creative",
+      "voice": "female2",
+      "description": "MC sáng tạo, năng động",
+      "animations": ["Idle", "Talk", "Present", "Gesture", "Walk", "Dance"],
+      "availableOutfits": ["creative", "casual", "sport", "stage"],
+      "skinTone": "#f5deb3",
+      "height": 1.62
+    },
+    "female3": {
+      "id": "female3",
+      "name": "An",
+      "avatar": "👩‍🔬",
+      "modelPath": "characters/female3.glb",
+      "defaultOutfit": "formal",
+      "personality": "academic",
+      "voice": "female3",
+      "description": "MC học thuật, thông thái",
+      "animations": ["Idle", "Talk", "Present", "Gesture", "Walk"],
+      "availableOutfits": ["formal", "elegant", "casual"],
+      "skinTone": "#ffe4c4",
+      "height": 1.68
+    },
+    "female4": {
+      "id": "female4",
+      "name": "Huong",
+      "avatar": "👩‍🏫",
+      "modelPath": "characters/female4.glb",
+      "defaultOutfit": "elegant",
+      "personality": "elegant",
+      "voice": "female4",
+      "description": "MC thanh lịch, duyên dáng",
+      "animations": ["Idle", "Talk", "Present", "Gesture", "Walk", "Dance"],
+      "availableOutfits": ["elegant", "traditional", "formal"],
+      "skinTone": "#ffdbac",
+      "height": 1.60
+    },
+    "female5": {
+      "id": "female5",
+      "name": "Giang",
+      "avatar": "👩‍💻",
+      "modelPath": "characters/female5.glb",
+      "defaultOutfit": "tech",
+      "personality": "tech",
+      "voice": "female5",
+      "description": "MC công nghệ, hiện đại",
+      "animations": ["Idle", "Talk", "Present", "Gesture", "Walk"],
+      "availableOutfits": ["tech", "casual", "sport"],
+      "skinTone": "#f5deb3",
+      "height": 1.63
+    },
+    "female6": {
+      "id": "female6",
+      "name": "Trang",
+      "avatar": "👩‍🎤",
+      "modelPath": "characters/female6.glb",
+      "defaultOutfit": "stage",
+      "personality": "energetic",
+      "voice": "female6",
+      "description": "MC sôi nổi, hoạt náo",
+      "animations": ["Idle", "Talk", "Present", "Gesture", "Walk", "Dance"],
+      "availableOutfits": ["stage", "creative", "sport"],
+      "skinTone": "#ffe4c4",
+      "height": 1.66
+    }
+  },
+  "wardrobe": {
+    "outfits": {
+      "casual": {
+        "id": "casual",
+        "name": "Casual",
+        "icon": "👕",
+        "color": "#4a90e2",
+        "description": "Trang phục thường ngày",
+        "compatibleCharacters": ["female1", "female2", "female3", "female5"],
+        "materials": {
+          "top": "textures/casual_top.jpg",
+          "bottom": "textures/casual_bottom.jpg"
+        }
+      },
+      "formal": {
+        "id": "formal",
+        "name": "Formal",
+        "icon": "👔",
+        "color": "#2c3e50",
+        "description": "Trang phục công sở",
+        "compatibleCharacters": ["female1", "female3", "female4"],
+        "materials": {
+          "top": "textures/formal_top.jpg",
+          "bottom": "textures/formal_bottom.jpg"
+        }
+      },
+      "elegant": {
+        "id": "elegant",
+        "name": "Elegant",
+        "icon": "👗",
+        "color": "#8e44ad",
+        "description": "Váy dạ hội thanh lịch",
+        "compatibleCharacters": ["female1", "female3", "female4"],
+        "materials": {
+          "dress": "textures/elegant_dress.jpg"
+        }
+      },
+      "creative": {
+        "id": "creative",
+        "name": "Creative",
+        "icon": "🎨",
+        "color": "#e74c3c",
+        "description": "Trang phục sáng tạo",
+        "compatibleCharacters": ["female2", "female6"],
+        "materials": {
+          "top": "textures/creative_top.jpg",
+          "bottom": "textures/creative_bottom.jpg"
+        }
+      },
+      "tech": {
+        "id": "tech",
+        "name": "Tech",
+        "icon": "💻",
+        "color": "#34495e",
+        "description": "Trang phục công nghệ",
+        "compatibleCharacters": ["female5"],
+        "materials": {
+          "top": "textures/tech_top.jpg",
+          "bottom": "textures/tech_bottom.jpg"
+        }
+      },
+      "stage": {
+        "id": "stage",
+        "name": "Stage",
+        "icon": "🎤",
+        "color": "#f39c12",
+        "description": "Trang phục sân khấu",
+        "compatibleCharacters": ["female6"],
+        "materials": {
+          "outfit": "textures/stage_outfit.jpg"
+        }
+      },
+      "traditional": {
+        "id": "traditional",
+        "name": "Áo dài",
+        "icon": "👘",
+        "color": "#c0392b",
+        "description": "Áo dài truyền thống",
+        "compatibleCharacters": ["female1", "female4"],
+        "materials": {
+          "dress": "textures/traditional_dress.jpg"
+        }
+      },
+      "sport": {
+        "id": "sport",
+        "name": "Sport",
+        "icon": "🏃‍♀️",
+        "color": "#27ae60",
+        "description": "Trang phục thể thao",
+        "compatibleCharacters": ["female2", "female5", "female6"],
+        "materials": {
+          "top": "textures/sport_top.jpg",
+          "bottom": "textures/sport_bottom.jpg"
+        }
+      }
+    },
+    "hair": {
+      "long": {
+        "id": "long",
+        "name": "Long Hair",
+        "icon": "💇‍♀️",
+        "modelPath": "hair/long_hair.glb",
+        "compatibleCharacters": ["female1", "female2", "female4", "female6"]
+      },
+      "short": {
+        "id": "short",
+        "name": "Short Hair",
+        "icon": "👩‍🦱",
+        "modelPath": "hair/short_hair.glb",
+        "compatibleCharacters": ["female3", "female5"]
+      },
+      "ponytail": {
+        "id": "ponytail",
+        "name": "Ponytail",
+        "icon": "🦸‍♀️",
+        "modelPath": "hair/ponytail.glb",
+        "compatibleCharacters": ["female1", "female2", "female5", "female6"]
+      },
+      "bun": {
+        "id": "bun",
+        "name": "Bun",
+        "icon": "👩‍🦳",
+        "modelPath": "hair/bun.glb",
+        "compatibleCharacters": ["female3", "female4"]
+      },
+      "wavy": {
+        "id": "wavy",
+        "name": "Wavy",
+        "icon": "🌊",
+        "modelPath": "hair/wavy_hair.glb",
+        "compatibleCharacters": ["female1", "female4", "female6"]
+      },
+      "straight": {
+        "id": "straight",
+        "name": "Straight",
+        "icon": "➖",
+        "modelPath": "hair/straight_hair.glb",
+        "compatibleCharacters": ["female2", "female3", "female5"]
+      }
+    },
+    "accessories": {
+      "none": {
+        "id": "none",
+        "name": "None",
+        "icon": "❌",
+        "modelPath": null
+      },
+      "glasses": {
+        "id": "glasses",
+        "name": "Glasses",
+        "icon": "👓",
+        "modelPath": "accessories/glasses.glb",
+        "compatibleCharacters": ["female1", "female3", "female5"]
+      },
+      "necklace": {
+        "id": "necklace",
+        "name": "Necklace",
+        "icon": "📿",
+        "modelPath": "accessories/necklace.glb",
+        "compatibleCharacters": ["female1", "female2", "female4", "female6"]
+      },
+      "earrings": {
+        "id": "earrings",
+        "name": "Earrings",
+        "icon": "💎",
+        "modelPath": "accessories/earrings.glb",
+        "compatibleCharacters": ["female1", "female2", "female4", "female6"]
+      },
+      "bracelet": {
+        "id": "bracelet",
+        "name": "Bracelet",
+        "icon": "⌚",
+        "modelPath": "accessories/bracelet.glb",
+        "compatibleCharacters": ["female2", "female5", "female6"]
+      },
+      "bag": {
+        "id": "bag",
+        "name": "Bag",
+        "icon": "👜",
+        "modelPath": "accessories/bag.glb",
+        "compatibleCharacters": ["female1", "female4", "female6"]
+      },
+      "hat": {
+        "id": "hat",
+        "name": "Hat",
+        "icon": "👒",
+        "modelPath": "accessories/hat.glb",
+        "compatibleCharacters": ["female2", "female6"]
+      },
+      "scarf": {
+        "id": "scarf",
+        "name": "Scarf",
+        "icon": "🧣",
+        "modelPath": "accessories/scarf.glb",
+        "compatibleCharacters": ["female1", "female3", "female4"]
+      }
+    },
+    "colors": {
+      "#ff6b6b": {
+        "name": "Red",
+        "hex": "#ff6b6b",
+        "description": "Màu đỏ rực rỡ"
+      },
+      "#4ecdc4": {
+        "name": "Teal",
+        "hex": "#4ecdc4",
+        "description": "Màu xanh ngọc"
+      },
+      "#45b7d1": {
+        "name": "Blue",
+        "hex": "#45b7d1",
+        "description": "Màu xanh dương"
+      },
+      "#96ceb4": {
+        "name": "Green",
+        "hex": "#96ceb4",
+        "description": "Màu xanh lá"
+      },
+      "#ffeaa7": {
+        "name": "Yellow",
+        "hex": "#ffeaa7",
+        "description": "Màu vàng nhạt"
+      },
+      "#dfe6e9": {
+        "name": "Gray",
+        "hex": "#dfe6e9",
+        "description": "Màu xám"
+      },
+      "#a29bfe": {
+        "name": "Purple",
+        "hex": "#a29bfe",
+        "description": "Màu tím"
+      },
+      "#fd79a8": {
+        "name": "Pink",
+        "hex": "#fd79a8",
+        "description": "Màu hồng"
+      }
+    }
+  },
+  "personalities": {
+    "professional": {
+      "name": "Chuyên nghiệp",
+      "speakingStyle": "trang trọng, rõ ràng",
+      "greeting": "Xin chào quý vị, tôi là [tên]",
+      "topics": ["kinh doanh", "công nghệ", "giáo dục"]
+    },
+    "creative": {
+      "name": "Sáng tạo",
+      "speakingStyle": "năng động, thân thiện",
+      "greeting": "Hello mọi người, tôi là [tên] đây!",
+      "topics": ["nghệ thuật", "thiết kế", "giải trí"]
+    },
+    "academic": {
+      "name": "Học thuật",
+      "speakingStyle": "chính xác, sâu sắc",
+      "greeting": "Kính thưa quý vị, tôi là [tên]",
+      "topics": ["khoa học", "nghiên cứu", "phát triển"]
+    },
+    "elegant": {
+      "name": "Thanh lịch",
+      "speakingStyle": "duyên dáng, nhẹ nhàng",
+      "greeting": "Xin chào, rất vui được gặp quý vị, tôi là [tên]",
+      "topics": ["thời trang", "văn hóa", "xã hội"]
+    },
+    "tech": {
+      "name": "Công nghệ",
+      "speakingStyle": "hiện đại, trực quan",
+      "greeting": "Hi everyone, I'm [tên]",
+      "topics": ["công nghệ", "lập trình", "startup"]
+    },
+    "energetic": {
+      "name": "Sôi nổi",
+      "speakingStyle": "tự tin, hoạt náo",
+      "greeting": "Vui quá được gặp mọi người! Tôi là [tên]!",
+      "topics": ["giải trí", "thể thao", "sự kiện"]
+    }
+  },
+  "animations": {
+    "Idle": {
+      "name": "Đứng yên",
+      "description": "Tư thế đứng mặc định"
+    },
+    "Talk": {
+      "name": "Nói chuyện",
+      "description": "Animation nói chuyện với cử chỉ tay"
+    },
+    "Present": {
+      "name": "Giới thiệu",
+      "description": "Animation giới thiệu sản phẩm"
+    },
+    "Gesture": {
+      "name": "Cử chỉ",
+      "description": "Các cử chỉ tay đa dạng"
+    },
+    "Walk": {
+      "name": "Đi bộ",
+      "description": "Animation đi bộ"
+    },
+    "Dance": {
+      "name": "Nhảy múa",
+      "description": "Animation nhảy múa sôi động"
+    }
+  }
+}

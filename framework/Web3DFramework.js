@@ -35,6 +35,27 @@ import {
     GeminiAIManager,
     AICharacterGenerator
 } from './ai/AICharacterGenerator.js';
+import {
+    AISceneGenerator,
+    AISceneAnalyzer
+} from './ai/AISceneGenerator.js';
+import {
+    AIPerformanceOptimizer,
+    AIPerformanceMonitor
+} from './ai/AIPerformanceOptimizer.js';
+import {
+    AIContentSuggester,
+    ContentAnalyzer
+} from './ai/AIContentSuggester.js';
+import {
+    AIWebXRManager,
+    AIGestureRecognition,
+    AIVoiceCommands
+} from './ai/AIWebXRIntegration.js';
+import {
+    AIAssetGenerator,
+    ProceduralGeometryGenerator
+} from './ai/AIAssetGenerator.js';
 
 /**
  * Main Web3D Framework Class
@@ -48,6 +69,10 @@ class Web3DFramework {
         // Framework modules
         this.modules = new Map();
         this.plugins = new Map();
+        
+        // AI Systems
+        this.aiSystems = new Map();
+        this.aiService = options.aiService || null;
         
         // Initialize framework
         this.init();
@@ -71,6 +96,9 @@ class Web3DFramework {
         
         // Register WebXR if available
         this.registerWebXR();
+        
+        // Register AI systems
+        this.registerAISystems();
         
         console.log(`Web3D Framework v${this.version} initialized`);
     }
@@ -130,6 +158,48 @@ class Web3DFramework {
             }
         } catch (error) {
             console.warn('WebXR not available:', error.message);
+        }
+    }
+    
+    /**
+     * Register AI systems
+     */
+    registerAISystems() {
+        if (!this.aiService) {
+            console.warn('AI Service not provided, AI systems will be disabled');
+            return;
+        }
+
+        try {
+            // Register AI Performance Optimizer
+            const performanceOptimizer = new AIPerformanceOptimizer(this, this.aiService);
+            this.aiSystems.set('PerformanceOptimizer', performanceOptimizer);
+            this.engine.addSystem('AIPerformance', performanceOptimizer);
+            
+            // Register AI Scene Generator
+            const sceneGenerator = new AISceneGenerator(this, this.aiService);
+            this.aiSystems.set('SceneGenerator', sceneGenerator);
+            
+            // Register AI Asset Generator
+            const assetGenerator = new AIAssetGenerator(this, this.aiService);
+            this.aiSystems.set('AssetGenerator', assetGenerator);
+            
+            // Register AI WebXR Manager (if WebXR is available)
+            if (this.engine.getSystem('WebXR')) {
+                const webxrAI = new AIWebXRManager(this, this.aiService);
+                this.aiSystems.set('WebXR', webxrAI);
+                webxrAI.initializeAIWebXR();
+            }
+            
+            // Register AI Content Suggester (if library manager is available)
+            if (this.options.libraryManager) {
+                const contentSuggester = new AIContentSuggester(this, this.aiService, this.options.libraryManager);
+                this.aiSystems.set('ContentSuggester', contentSuggester);
+            }
+            
+            console.log('AI systems registered successfully');
+        } catch (error) {
+            console.error('Failed to register AI systems:', error);
         }
     }
     
@@ -310,12 +380,96 @@ class Web3DFramework {
     getStats() {
         const performanceSystem = this.getSystem('Performance');
         const memorySystem = this.getSystem('MemoryManagement');
+        const aiPerformanceSystem = this.aiSystems.get('PerformanceOptimizer');
         
         return {
             engine: this.engine.stats,
             performance: performanceSystem ? performanceSystem.getStats() : null,
-            memory: memorySystem ? memorySystem.getMemoryStats() : null
+            memory: memorySystem ? memorySystem.getMemoryStats() : null,
+            ai: aiPerformanceSystem ? aiPerformanceSystem.getOptimizationStatus() : null
         };
+    }
+    
+    /**
+     * Get AI system
+     */
+    getAISystem(name) {
+        return this.aiSystems.get(name);
+    }
+    
+    /**
+     * Generate AI scene
+     */
+    async generateAIScene(prompt, options = {}) {
+        const sceneGenerator = this.aiSystems.get('SceneGenerator');
+        if (!sceneGenerator) {
+            throw new Error('AI Scene Generator not available');
+        }
+        return await sceneGenerator.generateScene(prompt, options);
+    }
+    
+    /**
+     * Generate AI asset
+     */
+    async generateAIAsset(description, options = {}) {
+        const assetGenerator = this.aiSystems.get('AssetGenerator');
+        if (!assetGenerator) {
+            throw new Error('AI Asset Generator not available');
+        }
+        return await assetGenerator.generateAsset(description, options);
+    }
+    
+    /**
+     * Get AI content suggestions
+     */
+    async getAIContentSuggestions(scene, context = {}) {
+        const contentSuggester = this.aiSystems.get('ContentSuggester');
+        if (!contentSuggester) {
+            throw new Error('AI Content Suggester not available');
+        }
+        return await contentSuggester.getSuggestions(scene, context);
+    }
+    
+    /**
+     * Start AI performance optimization
+     */
+    startAIOptimization() {
+        const performanceOptimizer = this.aiSystems.get('PerformanceOptimizer');
+        if (performanceOptimizer) {
+            performanceOptimizer.startOptimization();
+        }
+    }
+    
+    /**
+     * Stop AI performance optimization
+     */
+    stopAIOptimization() {
+        const performanceOptimizer = this.aiSystems.get('PerformanceOptimizer');
+        if (performanceOptimizer) {
+            performanceOptimizer.stopOptimization();
+        }
+    }
+    
+    /**
+     * Enable AI WebXR features
+     */
+    async enableAIWebXR() {
+        const webxrAI = this.aiSystems.get('WebXR');
+        if (webxrAI) {
+            await webxrAI.enableVoiceCommands();
+            await webxrAI.enableGestureRecognition();
+        }
+    }
+    
+    /**
+     * Disable AI WebXR features
+     */
+    disableAIWebXR() {
+        const webxrAI = this.aiSystems.get('WebXR');
+        if (webxrAI) {
+            webxrAI.disableVoiceCommands();
+            webxrAI.disableGestureRecognition();
+        }
     }
     
     /**
@@ -363,6 +517,14 @@ class Web3DFramework {
      * Dispose of the framework
      */
     dispose() {
+        // Dispose AI systems
+        this.aiSystems.forEach(system => {
+            if (system.dispose) {
+                system.dispose();
+            }
+        });
+        this.aiSystems.clear();
+        
         if (this.engine) {
             this.engine.dispose();
         }
@@ -370,6 +532,7 @@ class Web3DFramework {
         this.modules.clear();
         this.plugins.clear();
         this.engine = null;
+        this.aiService = null;
     }
 }
 
@@ -495,7 +658,18 @@ export {
     ARSystem,
     // AI
     GeminiAIManager,
-    AICharacterGenerator
+    AICharacterGenerator,
+    AISceneGenerator,
+    AISceneAnalyzer,
+    AIPerformanceOptimizer,
+    AIPerformanceMonitor,
+    AIContentSuggester,
+    ContentAnalyzer,
+    AIWebXRManager,
+    AIGestureRecognition,
+    AIVoiceCommands,
+    AIAssetGenerator,
+    ProceduralGeometryGenerator
 };
 
 // Default export

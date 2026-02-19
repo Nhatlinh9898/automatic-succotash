@@ -3,6 +3,8 @@
  * Ready-to-use prompts for male and female characters
  */
 
+import ollamaService from '../../src/services/ollamaService.js';
+
 // Male Character Prompts
 export const maleCharacterPrompts = {
     // Fantasy

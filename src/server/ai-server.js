@@ -3,27 +3,26 @@ import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import os from 'os';
-import aiService from '../services/aiService.js';
+import ollamaService from '../services/ollamaService.js';
 import agentSystem from '../services/agentSystem.js';
 import libraryManager from '../services/libraryManager.js';
-// Temporarily disabled due to missing methods
-// import MicroAgentSystem from '../services/microAgentSystem.js';
-// import SubAgentSystem from '../services/subAgentSystem.js';
+import MicroAgentSystem from '../services/microAgentSystem.js';
+import SubAgentSystem from '../services/subAgentSystem.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Initialize services
-// Micro-agent system temporarily disabled
-const microAgentSystem = null;
+const microAgentSystem = MicroAgentSystem;
+const subAgentSystem = SubAgentSystem;
 
 // Service status tracking
 const serviceStatus = {
-  aiService: 'initialized',
+  ollamaService: 'initialized',
   agentSystem: 'initialized', 
   libraryManager: 'initialized',
-  microAgentSystem: 'disabled',
-  subAgentSystem: 'disabled'
+  microAgentSystem: 'initialized',
+  subAgentSystem: 'initialized'
 };
 
 // Middleware
@@ -80,16 +79,16 @@ const mockAIResponses = {
   'default': 'This is an interesting prompt! Let me help you explore this idea further with creative suggestions and detailed analysis.'
 };
 
-// Enhanced AI endpoint with integrated services
+// Enhanced AI endpoint with Ollama integration
 app.post('/api/ai', async (req, res) => {
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const startTime = Date.now();
   
   try {
-    const { prompt, model = 'gpt-3.5-turbo', max_tokens = 1000, temperature = 0.7, agent = 'unknown', useAgentSystem = true } = req.body;
+    const { prompt, model = 'llama3.2:3b', max_tokens = 1000, temperature = 0.7, agent = 'unknown', useAgentSystem = true } = req.body;
     
     // Log request for monitoring
-    console.log(`[${requestId}] AI Request - Agent: ${agent}, IP: ${req.ip}, Prompt length: ${prompt?.length || 0}`);
+    console.log(`[${requestId}] AI Request - Model: ${model}, Agent: ${agent}, IP: ${req.ip}, Prompt length: ${prompt?.length || 0}`);
     
     // Validate input
     if (!prompt || typeof prompt !== 'string') {
@@ -132,7 +131,7 @@ app.post('/api/ai', async (req, res) => {
             response: agentResult.response || agentResult.content || agentResult,
             model,
             agent: detectedAgent,
-            usage: agentResult.usage || {
+            usage: {
               prompt_tokens: Math.floor(prompt.length / 4),
               completion_tokens: Math.floor((agentResult.response || agentResult || '').length / 4),
               total_tokens: Math.floor((prompt.length + (agentResult.response || agentResult || '').length) / 4)
@@ -144,16 +143,16 @@ app.post('/api/ai', async (req, res) => {
             processingMethod: 'agent_system'
           };
         } else {
-          // Fallback to AI Service
-          response = await processWithAIService(prompt, { model, max_tokens, temperature, agent: detectedAgent }, requestId, startTime);
+          // Fallback to Ollama Service
+          response = await processWithOllamaService(prompt, { model, max_tokens, temperature, agent: detectedAgent }, requestId, startTime);
         }
       } catch (error) {
-        console.warn(`[${requestId}] Agent system failed, falling back to AI service:`, error.message);
-        response = await processWithAIService(prompt, { model, max_tokens, temperature, agent }, requestId, startTime);
+        console.warn(`[${requestId}] Agent system failed, falling back to Ollama service: `, error.message);
+        response = await processWithOllamaService(prompt, { model, max_tokens, temperature, agent: detectedAgent }, requestId, startTime);
       }
     } else {
-      // Use AI Service directly
-      response = await processWithAIService(prompt, { model, max_tokens, temperature, agent }, requestId, startTime);
+      // Use Ollama Service directly
+      response = await processWithOllamaService(prompt, { model, max_tokens, temperature, agent }, requestId, startTime);
     }
     
     console.log(`[${requestId}] AI Response completed in ${Date.now() - startTime}ms`);
@@ -169,14 +168,14 @@ app.post('/api/ai', async (req, res) => {
   }
 });
 
-// Helper function to process with AI Service
-async function processWithAIService(prompt, options, requestId, startTime) {
+// Helper function to process with Ollama Service
+async function processWithOllamaService(prompt, options, requestId, startTime) {
   try {
-    const result = await aiService.generatePrompt(prompt, options);
+    const result = await ollamaService.generateResponse(prompt, options);
     
     return {
       response: result,
-      model: options.model || 'gpt-3.5-turbo',
+      model: options.model || 'llama3.2:3b',
       agent: options.agent || 'unknown',
       usage: {
         prompt_tokens: Math.floor(prompt.length / 4),
@@ -186,10 +185,10 @@ async function processWithAIService(prompt, options, requestId, startTime) {
       timestamp: new Date().toISOString(),
       requestId,
       processingTime: Date.now() - startTime,
-      processingMethod: 'ai_service'
+      processingMethod: 'ollama_service'
     };
   } catch (error) {
-    console.error(`[${requestId}] AI Service Error:`, error);
+    console.error(`[${requestId}] Ollama Service Error:`, error);
     throw error;
   }
 }
@@ -334,6 +333,26 @@ app.post('/api/agents/process', strictLimiter, async (req, res) => {
   }
 });
 
+// Get available models from Ollama
+app.get('/api/models', async (req, res) => {
+  try {
+    const models = await ollamaService.getAvailableModels();
+    const modelDetails = models.map(model => ({
+      ...model,
+      ...ollamaService.getModelInfo(model.name)
+    }));
+    
+    res.json({
+      models: modelDetails,
+      total: models.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('[Models] Error fetching models:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get available agents
 app.get('/api/agents', (req, res) => {
   const agents = [];
@@ -388,10 +407,6 @@ app.post('/api/micro-agents/process', strictLimiter, async (req, res) => {
   const requestId = `micro_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
   try {
-    if (!microAgentSystem) {
-      return res.status(503).json({ error: 'Micro-agent system not available' });
-    }
-    
     const { task, context, options = {} } = req.body;
     
     if (!task) {
@@ -421,10 +436,6 @@ app.post('/api/sub-agents/orchestrate', strictLimiter, async (req, res) => {
   const requestId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
   try {
-    if (!subAgentSystem) {
-      return res.status(503).json({ error: 'Sub-agent system not available' });
-    }
-    
     const { mainTask, subTasks, options = {} } = req.body;
     
     if (!mainTask) {
@@ -450,22 +461,45 @@ app.post('/api/sub-agents/orchestrate', strictLimiter, async (req, res) => {
 });
 
 // Service status endpoint
-app.get('/api/services/status', (req, res) => {
-  const queueStats = aiService.queueManager.getStats();
-  
-  res.json({
-    services: serviceStatus,
-    queue: queueStats,
-    agents: {
-      total: agentSystem.agents.size,
-      available: Array.from(agentSystem.agents.keys())
-    },
-    library: {
-      status: 'connected',
-      manager: 'LibraryManager'
-    },
-    timestamp: new Date().toISOString()
-  });
+app.get('/api/services/status', async (req, res) => {
+  try {
+    const models = await ollamaService.getAvailableModels();
+    
+    res.json({
+      services: serviceStatus,
+      ollama: {
+        status: 'connected',
+        availableModels: models,
+        defaultModel: ollamaService.defaultModel
+      },
+      agents: {
+        total: agentSystem.agents.size,
+        available: Array.from(agentSystem.agents.keys())
+      },
+      library: {
+        status: 'connected',
+        manager: 'LibraryManager'
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.json({
+      services: serviceStatus,
+      ollama: {
+        status: 'error',
+        error: error.message
+      },
+      agents: {
+        total: agentSystem.agents.size,
+        available: Array.from(agentSystem.agents.keys())
+      },
+      library: {
+        status: 'connected',
+        manager: 'LibraryManager'
+      },
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // Enhanced health check endpoint with system status

@@ -1,5 +1,6 @@
 // AI Service for handling AI API calls with enhanced rate limiting and queue management
 import RequestQueueManager from './requestQueueManager.js';
+import ollamaService from './ollamaService.js';
 
 class AIService {
   constructor() {
@@ -32,6 +33,9 @@ class AIService {
     
     // Processing status callbacks
     this.statusCallbacks = [];
+    
+    // Initialize ollama service
+    this.ollamaService = ollamaService;
     
     // Setup queue event listeners
     this.setupQueueEventListeners();

@@ -1,24 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
-import Header from './components/Header'
-import Sidebar from './components/Sidebar'
-import PromptInput from './components/PromptInput'
-import ResponseDisplay from './components/ResponseDisplay'
-import History from './components/History'
-import Settings from './components/Settings'
-import CharacterPrompts from './components/CharacterPrompts'
-import ErrorBoundary from './components/ErrorBoundary'
-import FeatureShowcase from './components/FeatureShowcase'
-import AgentSystemDemo from './components/AgentSystemDemo'
-import WebXRDemo from './components/WebXRDemo'
-import ParticleEffectsDemo from './components/ParticleEffectsDemo'
-import AICharacterGenerator from './components/AICharacterGenerator'
-import PhysicsPlayground from './components/PhysicsPlayground'
-import RealtimeCollaboration from './components/RealtimeCollaboration'
-import TerrainGenerator from './components/TerrainGenerator'
-import AudioVisualizer from './components/AudioVisualizer'
-import ShaderEditor from './components/ShaderEditor'
-import FrameworkIntegration from './components/FrameworkIntegration'
+import { Header, Sidebar, ErrorBoundary } from './components/layout'
+import { PromptInput, ResponseDisplay, FeatureShowcase } from './components/ui'
+import { History, Settings, TokenManager, LibraryManager, FrameworkIntegration, MCPresenter, RealtimeCollaboration } from './components/utilities'
+import { AICharacterGenerator, AITokenDemo, CharacterPrompts, CharacterSystem } from './components/features/ai'
+import { AgentManager, AgentSystemDemo, MicroAgentManager, SubAgentManager, MultiAgentDemo, SimpleAgentTest } from './components/features/agents'
+import { ParticleEffectsDemo, PhysicsPlayground, TerrainGenerator, ThreeJSScene, ShaderEditor, AudioVisualizer } from './components/features/demos'
+import { WebXRDemo } from './components/features/webxr'
 import aiService from './services/aiService'
 import './App.css'
 
@@ -169,6 +157,7 @@ function AppContent() {
           <Route path="/characters" element={<CharacterPrompts />} />
           <Route path="/showcase" element={<FeatureShowcase />} />
           <Route path="/agents" element={<AgentSystemDemo />} />
+          <Route path="/agents/test" element={<SimpleAgentTest />} />
           <Route path="/webxr" element={<WebXRDemo />} />
           <Route path="/particles" element={<ParticleEffectsDemo />} />
           <Route path="/character-generator" element={<AICharacterGenerator />} />

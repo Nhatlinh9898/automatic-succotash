@@ -4,6 +4,7 @@
  */
 
 import * as THREE from 'three';
+import ollamaService from '../../src/services/ollamaService.js';
 
 /**
  * Procedural Geometry Generator
@@ -12,6 +13,7 @@ class ProceduralGeometryGenerator {
     constructor() {
         this.geometryCache = new Map();
         this.parameters = new Map();
+        this.ollamaService = ollamaService;
         
         this.setupDefaultParameters();
     }

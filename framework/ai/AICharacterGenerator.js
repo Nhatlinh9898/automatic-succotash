@@ -2,6 +2,8 @@
  * AI Character Generator - Gemini AI Integration for 3D Character Creation
  */
 
+import ollamaService from '../../src/services/ollamaService.js';
+
 /**
  * Gemini AI Manager
  */
@@ -9,6 +11,7 @@ class GeminiAIManager {
     constructor(apiKey) {
         this.apiKey = apiKey;
         this.baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+        this.ollamaService = ollamaService;
         this.isInitialized = false;
     }
     

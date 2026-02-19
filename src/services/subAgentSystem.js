@@ -1,10 +1,12 @@
 // Sub-Agent System - Detailed specialized agents for each main agent
 import LibraryManager from './libraryManager.js';
+import ollamaService from './ollamaService.js';
 
 class SubAgentSystem {
   constructor() {
     this.subAgents = new Map();
     this.libraryManager = LibraryManager;
+    this.ollamaService = ollamaService;
     this.initializeSubAgents();
     
     // Setup library event listeners

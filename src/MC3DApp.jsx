@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import CharacterSystem from './components/CharacterSystem';
-import MCPresenter from './components/MCPresenter';
+import { CharacterSystem } from './components/features/ai'
+import { MCPresenter } from './components/utilities'
 import './MC3DApp.css';
 
 function MC3DApp() {

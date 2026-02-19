@@ -4,11 +4,13 @@
  */
 
 import { Web3DFramework, Web3DUtils } from '../../framework/Web3DFramework.js';
+import ollamaService from './ollamaService.js';
 
 class FrameworkService {
   constructor() {
     this.framework = null;
     this.isInitialized = false;
+    this.ollamaService = ollamaService;
     this.serverConfig = {
       mainServer: 'http://localhost:3001',
       aiServer: 'http://localhost:8080'

@@ -4,6 +4,7 @@
  */
 
 import * as THREE from 'three';
+import ollamaService from '../../src/services/ollamaService.js';
 
 /**
  * Performance Monitor with AI Analysis
@@ -30,6 +31,7 @@ class AIPerformanceMonitor {
             maxDrawCalls: 1000
         };
         
+        this.ollamaService = ollamaService;
         this.lastFrameTime = performance.now();
         this.frameCount = 0;
     }

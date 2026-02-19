@@ -1,0 +1,6 @@
+{
+  "prompt": "Xin chào, bạn là AI gì?",
+  "model": "llama3.2:3b",
+  "temperature": 0.7,
+  "max_tokens": 500
+}

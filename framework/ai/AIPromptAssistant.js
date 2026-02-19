@@ -4,6 +4,7 @@
  */
 
 import { maleCharacterPrompts, femaleCharacterPrompts } from './CharacterPrompts.js';
+import ollamaService from '../../src/services/ollamaService.js';
 
 /**
  * AI Prompt Assistant Class
@@ -14,6 +15,7 @@ class AIPromptAssistant {
             male: maleCharacterPrompts,
             female: femaleCharacterPrompts
         };
+        this.ollamaService = ollamaService;
         this.creationRules = new Map();
         this.userHistory = [];
         this.isInitialized = false;

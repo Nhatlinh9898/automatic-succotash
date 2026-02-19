@@ -12,13 +12,20 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:11434',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api')
       }
     }
   },
   build: {
     outDir: 'dist'
+  },
+  resolve: {
+    alias: {
+      '@': '/src'
+    },
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
   }
 })

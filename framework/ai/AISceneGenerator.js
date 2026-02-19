@@ -4,6 +4,7 @@
  */
 
 import * as THREE from 'three';
+import ollamaService from '../../src/services/ollamaService.js';
 
 /**
  * AI Scene Analysis System
@@ -11,6 +12,7 @@ import * as THREE from 'three';
 class AISceneAnalyzer {
     constructor(aiService) {
         this.aiService = aiService;
+        this.ollamaService = ollamaService;
         this.sceneTemplates = new Map();
         this.sceneHistory = [];
         this.analysisCache = new Map();

@@ -4,6 +4,7 @@
  */
 
 import * as THREE from 'three';
+import ollamaService from '../../src/services/ollamaService.js';
 
 /**
  * AI Gesture Recognition System
@@ -11,6 +12,7 @@ import * as THREE from 'three';
 class AIGestureRecognition {
     constructor(aiService) {
         this.aiService = aiService;
+        this.ollamaService = ollamaService;
         this.gesturePatterns = new Map();
         this.gestureHistory = [];
         this.isRecording = false;

@@ -1,7 +1,9 @@
 // Micro-Agent System - Đội agent tinh thông cho từng sub-agent
+import ollamaService from './ollamaService.js';
 class MicroAgentSystem {
   constructor() {
     this.microAgents = new Map();
+    this.ollamaService = ollamaService;
     this.initializeMicroAgents();
   }
 

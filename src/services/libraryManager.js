@@ -1,4 +1,5 @@
 // Library Manager - Hệ thống quản lý thư viện kết quả agent
+import ollamaService from './ollamaService.js';
 class LibraryManager {
   constructor() {
     this.library = new Map(); // Main library storage
@@ -30,6 +31,9 @@ class LibraryManager {
       autoSaves: 0,
       lastCleanup: Date.now()
     };
+    
+    // Initialize ollama service for AI-powered features
+    this.ollamaService = ollamaService;
     
     // Event callbacks
     this.eventCallbacks = {

@@ -4,6 +4,7 @@
  */
 
 import { GeminiAIManager, AICharacterGenerator } from './AICharacterGenerator.js';
+import ollamaService from '../../src/services/ollamaService.js';
 
 /**
  * Library Integration Manager
@@ -13,6 +14,7 @@ class LibraryIntegrationManager {
         this.bodyComponents = new Map();
         this.hairComponents = new Map();
         this.clothingComponents = new Map();
+        this.ollamaService = ollamaService;
         this.animationComponents = new Map();
         this.isLoaded = false;
     }

@@ -1,5 +1,6 @@
 // Multi-Agent System for specialized task processing
 import LibraryManager from './libraryManager.js';
+import ollamaService from './ollamaService.js';
 
 class AgentSystem {
   constructor() {
@@ -7,6 +8,7 @@ class AgentSystem {
     this.taskQueue = [];
     this.isProcessing = false;
     this.libraryManager = LibraryManager;
+    this.ollamaService = ollamaService;
     this.initializeAgents();
     
     // Setup library event listeners

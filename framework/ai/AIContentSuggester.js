@@ -4,6 +4,7 @@
  */
 
 import * as THREE from 'three';
+import ollamaService from '../../src/services/ollamaService.js';
 
 /**
  * Content Analysis Engine
@@ -13,6 +14,7 @@ class ContentAnalyzer {
         this.analysisCache = new Map();
         this.stylePatterns = new Map();
         this.compatibilityRules = new Map();
+        this.ollamaService = ollamaService;
         
         this.setupStylePatterns();
         this.setupCompatibilityRules();

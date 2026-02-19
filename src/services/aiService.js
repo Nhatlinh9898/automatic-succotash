@@ -1,9 +1,22 @@
-// AI Service for handling AI API calls
+// AI Service for handling AI API calls with enhanced rate limiting and queue management
+import RequestQueueManager from './requestQueueManager.js';
+
 class AIService {
   constructor() {
     // Configure your AI API endpoint here
     this.apiEndpoint = process.env.REACT_APP_AI_API_ENDPOINT || 'http://localhost:8080/api/ai';
+    this.batchEndpoint = process.env.REACT_APP_AI_BATCH_ENDPOINT || 'http://localhost:8080/api/ai/batch';
     this.apiKey = process.env.REACT_APP_AI_API_KEY || '';
+    
+    // Initialize request queue manager
+    this.queueManager = new RequestQueueManager({
+      maxConcurrent: 2,              // Giới hạn concurrent requests
+      requestsPerSecond: 1,          // 1 request mỗi giây
+      maxQueueSize: 20,              // Queue size tối đa
+      requestTimeout: 30000,         // 30 seconds timeout
+      retryAttempts: 3,              // 3 lần retry
+      backoffMultiplier: 2           // Exponential backoff
+    });
     
     // Token management settings
     this.tokenSettings = {
@@ -16,6 +29,59 @@ class AIService {
     
     // Processing status callbacks
     this.statusCallbacks = [];
+    
+    // Setup queue event listeners
+    this.setupQueueEventListeners();
+  }
+
+  // Setup queue event listeners
+  setupQueueEventListeners() {
+    this.queueManager.on('onRequestQueued', (request) => {
+      this.notifyStatus({ 
+        stage: 'queued', 
+        isProcessing: true,
+        requestId: request.id,
+        agent: request.agent,
+        queuePosition: this.queueManager.getStats().queueLength
+      });
+    });
+
+    this.queueManager.on('onRequestStart', (request) => {
+      this.notifyStatus({ 
+        stage: 'processing', 
+        isProcessing: true,
+        requestId: request.id,
+        agent: request.agent
+      });
+    });
+
+    this.queueManager.on('onRequestComplete', ({ request, result, fromCache }) => {
+      this.notifyStatus({ 
+        stage: 'completed', 
+        isProcessing: false,
+        requestId: request.id,
+        agent: request.agent,
+        fromCache,
+        result
+      });
+    });
+
+    this.queueManager.on('onRequestFailed', ({ request, error }) => {
+      this.notifyStatus({ 
+        stage: 'failed', 
+        isProcessing: false,
+        requestId: request.id,
+        agent: request.agent,
+        error: error.message
+      });
+    });
+
+    this.queueManager.on('onQueueEmpty', () => {
+      this.notifyStatus({ 
+        stage: 'idle', 
+        isProcessing: false
+      });
+    });
   }
 
   // Register callback for status updates
@@ -41,33 +107,75 @@ class AIService {
       // Handle token limit by chunking if needed
       const processedPrompt = await this.handleTokenLimit(prompt, mergedOptions);
       
-      const response = await fetch(this.apiEndpoint, {
+      // Prepare request data for queue
+      const requestData = {
+        endpoint: this.apiEndpoint,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': this.apiKey ? `Bearer ${this.apiKey}` : '',
         },
-        body: JSON.stringify({
+        body: {
           prompt: processedPrompt,
           model: mergedOptions.model || 'gpt-3.5-turbo',
           max_tokens: mergedOptions.maxTokens || 1000,
           temperature: mergedOptions.temperature || 0.7,
+          agent: mergedOptions.agent || 'unknown',
           ...mergedOptions
-        })
-      });
+        },
+        agent: mergedOptions.agent || 'unknown',
+        type: 'ai_request',
+        priority: mergedOptions.priority || 'normal'
+      };
 
-      if (!response.ok) {
-        if (response.status === 429) {
-          // Rate limit exceeded, try with smaller chunks
-          return await this.handleRateLimit(prompt, mergedOptions);
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data.response || data.choices?.[0]?.message?.content || 'No response received';
+      // Enqueue request and wait for result
+      const result = await this.queueManager.enqueueRequest(requestData);
+      
+      return result.response || result.choices?.[0]?.message?.content || 'No response received';
+      
     } catch (error) {
       console.error('AI Service Error:', error);
+      
+      // Handle rate limit errors gracefully
+      if (error.message.includes('Rate limit') || error.message.includes('429')) {
+        throw new Error('AI service is experiencing high demand. Please try again in a few moments.');
+      }
+      
+      throw error;
+    }
+  }
+
+  // Batch processing for multiple prompts
+  async generateBatchPrompts(prompts, options = {}) {
+    try {
+      const batchRequests = prompts.map((prompt, index) => ({
+        prompt,
+        model: options.model || 'gpt-3.5-turbo',
+        max_tokens: options.maxTokens || 1000,
+        temperature: options.temperature || 0.7,
+        agent: options.agent || 'batch_agent'
+      }));
+
+      const requestData = {
+        endpoint: this.batchEndpoint,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': this.apiKey ? `Bearer ${this.apiKey}` : '',
+        },
+        body: {
+          requests: batchRequests
+        },
+        agent: options.agent || 'batch_agent',
+        type: 'batch_request',
+        priority: options.priority || 'low'
+      };
+
+      const result = await this.queueManager.enqueueRequest(requestData);
+      return result.results || [];
+      
+    } catch (error) {
+      console.error('AI Batch Service Error:', error);
       throw error;
     }
   }
@@ -194,6 +302,33 @@ class AIService {
         throw error;
       }
     }
+  }
+
+  // Get queue statistics and status
+  getQueueStatus() {
+    return this.queueManager.getStats();
+  }
+
+  // Get detailed queue information
+  getQueueDetails() {
+    return this.queueManager.getQueueStatus();
+  }
+
+  // Clear all queued requests
+  clearQueue() {
+    this.queueManager.clearQueue();
+  }
+
+  // Retry failed requests
+  retryFailedRequests() {
+    this.queueManager.retryFailedRequests();
+  }
+
+  // Update queue configuration
+  updateQueueConfig(config) {
+    // Note: This would require updating the queue manager implementation
+    // to support dynamic configuration updates
+    console.warn('Dynamic queue configuration update not implemented yet');
   }
 
   // Estimate token count (rough approximation)

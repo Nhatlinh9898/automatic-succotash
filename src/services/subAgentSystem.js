@@ -1,8 +1,14 @@
 // Sub-Agent System - Detailed specialized agents for each main agent
+import LibraryManager from './libraryManager.js';
+
 class SubAgentSystem {
   constructor() {
     this.subAgents = new Map();
+    this.libraryManager = LibraryManager;
     this.initializeSubAgents();
+    
+    // Setup library event listeners
+    this.setupLibraryEventListeners();
   }
 
   initializeSubAgents() {
@@ -418,6 +424,17 @@ class SubAgentSystem {
     return keywordMap[capability] || [];
   }
 
+  // Setup library event listeners
+  setupLibraryEventListeners() {
+    this.libraryManager.on('onItemAdded', (item) => {
+      console.log(`Library: Added sub-agent item ${item.id} from ${item.subAgentType}`);
+    });
+    
+    this.libraryManager.on('onItemRetrieved', (item) => {
+      console.log(`Library: Retrieved cached sub-agent item ${item.id}`);
+    });
+  }
+
   // Process with sub-agent
   async processWithSubAgent(prompt, parentAgent, options = {}) {
     const subAgentType = this.detectSubAgent(prompt, parentAgent);
@@ -429,6 +446,26 @@ class SubAgentSystem {
 
     console.log(`Using ${subAgent.name} (sub-agent of ${parentAgent})`);
 
+    // Check library first for similar results
+    if (options.useLibrary !== false) {
+      const libraryResult = await this.searchSubAgentLibrary(prompt, subAgentType, options);
+      if (libraryResult) {
+        console.log('Using cached sub-agent result from library');
+        return {
+          result: libraryResult.result,
+          processingChain: {
+            mainAgent: parentAgent,
+            subAgent: subAgentType,
+            microAgent: null,
+            level: 'library',
+            libraryItemId: libraryResult.id
+          },
+          fromLibrary: true,
+          libraryItem: libraryResult
+        };
+      }
+    }
+
     try {
       // Check if we should use micro-agents for more specialized processing
       if (options.useMicroAgents !== false) {
@@ -438,6 +475,10 @@ class SubAgentSystem {
         // Try to process with micro-agent first
         try {
           const microResult = await microAgentSystem.processWithMicroAgent(prompt, subAgentType, options);
+          
+          // Auto-save to library
+          await this.saveSubAgentToLibrary(prompt, microResult, parentAgent, subAgentType);
+          
           return {
             result: microResult,
             processingChain: {
@@ -454,6 +495,10 @@ class SubAgentSystem {
       }
       
       const result = await subAgent.process(prompt, options);
+      
+      // Auto-save to library
+      await this.saveSubAgentToLibrary(prompt, result, parentAgent, subAgentType);
+      
       return {
         result: result,
         processingChain: {
@@ -466,6 +511,140 @@ class SubAgentSystem {
     } catch (error) {
       throw error;
     }
+  }
+
+  // Search library for sub-agent results
+  async searchSubAgentLibrary(prompt, subAgentType, options = {}) {
+    try {
+      const searchResults = this.libraryManager.searchLibrary(prompt, {
+        agentType: subAgentType,
+        minQuality: options.minLibraryQuality || 0.5,
+        limit: 3
+      });
+      
+      if (searchResults.length > 0) {
+        return searchResults[0].item;
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn('Sub-agent library search failed:', error);
+      return null;
+    }
+  }
+
+  // Save sub-agent result to library
+  async saveSubAgentToLibrary(prompt, result, parentAgent, subAgentType) {
+    try {
+      const libraryItem = {
+        agentType: subAgentType,
+        subAgentType: subAgentType,
+        microAgentType: null,
+        prompt: prompt,
+        result: result,
+        processingChain: {
+          mainAgent: parentAgent,
+          subAgent: subAgentType,
+          microAgent: null,
+          level: 'sub'
+        },
+        tokens: this.estimateTokens(prompt + result),
+        processingTime: 0, // Would need to be tracked
+        model: 'gpt-3.5-turbo',
+        temperature: 0.7
+      };
+      
+      const itemId = this.libraryManager.addToLibrary(libraryItem, {
+        tags: this.generateSubAgentTags(prompt, subAgentType),
+        category: this.categorizeSubAgentResult(subAgentType),
+        quality: this.assessSubAgentResultQuality(result)
+      });
+      
+      console.log(`Saved sub-agent result to library with ID: ${itemId}`);
+      return itemId;
+    } catch (error) {
+      console.warn('Failed to save sub-agent result to library:', error);
+      return null;
+    }
+  }
+
+  // Generate tags for sub-agent library item
+  generateSubAgentTags(prompt, subAgentType) {
+    const tags = [subAgentType];
+    const promptLower = prompt.toLowerCase();
+    
+    // Add parent agent tag
+    const parentAgent = this.subAgents.get(subAgentType)?.parent;
+    if (parentAgent) {
+      tags.push(parentAgent);
+    }
+    
+    // Content-based tags
+    if (promptLower.includes('khuôn mặt') || promptLower.includes('face')) tags.push('face');
+    if (promptLower.includes('tóc') || promptLower.includes('hair')) tags.push('hair');
+    if (promptLower.includes('trang phục') || promptLower.includes('clothing')) tags.push('clothing');
+    if (promptLower.includes('tính cách') || promptLower.includes('personality')) tags.push('personality');
+    if (promptLower.includes('địa hình') || promptLower.includes('terrain')) tags.push('terrain');
+    if (promptLower.includes('công trình') || promptLower.includes('building')) tags.push('building');
+    if (promptLower.includes('cây') || promptLower.includes('tree')) tags.push('vegetation');
+    if (promptLower.includes('ánh sáng') || promptLower.includes('lighting')) tags.push('lighting');
+    
+    return [...new Set(tags)];
+  }
+
+  // Categorize sub-agent result
+  categorizeSubAgentResult(subAgentType) {
+    const categoryMap = {
+      'character_appearance': 'character_design',
+      'character_hair': 'character_design',
+      'character_clothing': 'character_design',
+      'character_personality': 'character_design',
+      'environment_terrain': 'environment_design',
+      'environment_architecture': 'environment_design',
+      'environment_vegetation': 'environment_design',
+      'environment_lighting': 'environment_design',
+      'animation_locomotion': 'animation',
+      'animation_combat': 'animation',
+      'animation_facial': 'animation',
+      'animation_idle': 'animation',
+      'technical_modeling': 'technical',
+      'technical_texturing': 'technical',
+      'technical_rigging': 'technical',
+      'technical_optimization': 'technical',
+      'story_plot': 'story',
+      'story_dialogue': 'story',
+      'story_quest': 'story',
+      'story_lore': 'story',
+      'ui_layout': 'ui_design',
+      'ui_interactive': 'ui_design',
+      'ui_visual': 'ui_design',
+      'ux_flow': 'ui_design'
+    };
+    
+    return categoryMap[subAgentType] || 'general';
+  }
+
+  // Assess sub-agent result quality
+  assessSubAgentResultQuality(result) {
+    if (!result || typeof result !== 'string') return 0.5;
+    
+    let score = 0.5;
+    
+    // Length factors
+    if (result.length > 100) score += 0.1;
+    if (result.length > 300) score += 0.1;
+    if (result.length > 500) score += 0.1;
+    
+    // Structure factors
+    if (result.includes('\n')) score += 0.1;
+    if (result.match(/\d+\./)) score += 0.1;
+    
+    return Math.min(score, 1.0);
+  }
+
+  // Estimate token count
+  estimateTokens(text) {
+    return Math.ceil(text.length / 4);
   }
 
   // Sub-agent processing methods (simplified for brevity - each would have detailed prompts)

@@ -1,10 +1,16 @@
 // Multi-Agent System for specialized task processing
+import LibraryManager from './libraryManager.js';
+
 class AgentSystem {
   constructor() {
     this.agents = new Map();
     this.taskQueue = [];
     this.isProcessing = false;
+    this.libraryManager = LibraryManager;
     this.initializeAgents();
+    
+    // Setup library event listeners
+    this.setupLibraryEventListeners();
   }
 
   initializeAgents() {
@@ -113,6 +119,17 @@ class AgentSystem {
     return keywordMap[capability] || [];
   }
 
+  // Setup library event listeners
+  setupLibraryEventListeners() {
+    this.libraryManager.on('onItemAdded', (item) => {
+      console.log(`Library: Added item ${item.id} from agent ${item.agentType}`);
+    });
+    
+    this.libraryManager.on('onItemRetrieved', (item) => {
+      console.log(`Library: Retrieved cached item ${item.id}`);
+    });
+  }
+
   // Process request with appropriate agent
   async processRequest(prompt, options = {}) {
     const agentType = this.detectAgent(prompt);
@@ -124,6 +141,26 @@ class AgentSystem {
 
     console.log(`Using ${agent.name} to process request`);
 
+    // Check library first for similar results
+    if (options.useLibrary !== false) {
+      const libraryResult = await this.searchLibrary(prompt, agentType, options);
+      if (libraryResult) {
+        console.log('Using cached result from library');
+        return {
+          result: libraryResult.result,
+          processingChain: {
+            mainAgent: agentType,
+            subAgent: null,
+            microAgent: null,
+            level: 'library',
+            libraryItemId: libraryResult.id
+          },
+          fromLibrary: true,
+          libraryItem: libraryResult
+        };
+      }
+    }
+
     // Add to task queue
     const task = {
       id: Date.now(),
@@ -131,7 +168,8 @@ class AgentSystem {
       prompt,
       options,
       status: 'pending',
-      agent: agent.name
+      agent: agent.name,
+      startTime: Date.now()
     };
 
     this.taskQueue.push(task);
@@ -147,6 +185,10 @@ class AgentSystem {
           task.status = 'completed';
           task.result = subResult;
           task.processingChain = subResult.processingChain;
+          
+          // Auto-save to library
+          await this.saveToLibrary(prompt, subResult, agentType, task);
+          
           return subResult;
         } catch (subError) {
           console.log('Sub-agent processing failed, falling back to main agent:', subError.message);
@@ -164,12 +206,125 @@ class AgentSystem {
           level: 'main'
         }
       };
+      
+      // Auto-save to library
+      await this.saveToLibrary(prompt, task.result, agentType, task);
+      
       return task.result;
     } catch (error) {
       task.status = 'failed';
       task.error = error.message;
       throw error;
     }
+  }
+
+  // Search library for similar results
+  async searchLibrary(prompt, agentType, options = {}) {
+    try {
+      const searchResults = this.libraryManager.searchLibrary(prompt, {
+        agentType: agentType,
+        minQuality: options.minLibraryQuality || 0.5,
+        limit: 5
+      });
+      
+      if (searchResults.length > 0) {
+        // Return the best match
+        return searchResults[0].item;
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn('Library search failed:', error);
+      return null;
+    }
+  }
+
+  // Save result to library
+  async saveToLibrary(prompt, result, agentType, task) {
+    try {
+      const libraryItem = {
+        agentType: agentType,
+        subAgentType: result.processingChain?.subAgent || null,
+        microAgentType: result.processingChain?.microAgent || null,
+        prompt: prompt,
+        result: result.result,
+        processingChain: result.processingChain,
+        tokens: this.estimateTokens(prompt + result.result),
+        processingTime: Date.now() - task.startTime,
+        model: 'gpt-3.5-turbo', // Could be dynamic
+        temperature: options.temperature || 0.7
+      };
+      
+      const itemId = this.libraryManager.addToLibrary(libraryItem, {
+        tags: this.generateTags(prompt, agentType),
+        category: this.categorizeResult(agentType),
+        quality: this.assessResultQuality(result.result)
+      });
+      
+      console.log(`Saved result to library with ID: ${itemId}`);
+      return itemId;
+    } catch (error) {
+      console.warn('Failed to save to library:', error);
+      return null;
+    }
+  }
+
+  // Generate tags for library item
+  generateTags(prompt, agentType) {
+    const tags = [agentType];
+    const promptLower = prompt.toLowerCase();
+    
+    // Content-based tags
+    if (promptLower.includes('nhân vật') || promptLower.includes('character')) tags.push('character');
+    if (promptLower.includes('môi trường') || promptLower.includes('environment')) tags.push('environment');
+    if (promptLower.includes('chuyển động') || promptLower.includes('animation')) tags.push('animation');
+    if (promptLower.includes('kỹ thuật') || promptLower.includes('technical')) tags.push('technical');
+    if (promptLower.includes('cốt truyện') || promptLower.includes('story')) tags.push('story');
+    if (promptLower.includes('giao diện') || promptLower.includes('ui')) tags.push('ui');
+    
+    // Style-based tags
+    if (promptLower.includes('chi tiết') || promptLower.includes('detailed')) tags.push('detailed');
+    if (promptLower.includes('đơn giản') || promptLower.includes('simple')) tags.push('simple');
+    if (promptLower.includes('phức tạp') || promptLower.includes('complex')) tags.push('complex');
+    
+    return [...new Set(tags)]; // Remove duplicates
+  }
+
+  // Categorize result for library
+  categorizeResult(agentType) {
+    const categoryMap = {
+      'character': 'character_design',
+      'environment': 'environment_design',
+      'animation': 'animation',
+      'technical': 'technical',
+      'story': 'story',
+      'ui': 'ui_design'
+    };
+    
+    return categoryMap[agentType] || 'general';
+  }
+
+  // Assess result quality
+  assessResultQuality(result) {
+    if (!result || typeof result !== 'string') return 0.5;
+    
+    let score = 0.5;
+    
+    // Length factors
+    if (result.length > 200) score += 0.1;
+    if (result.length > 500) score += 0.1;
+    if (result.length > 1000) score += 0.1;
+    
+    // Structure factors
+    if (result.includes('\n')) score += 0.1;
+    if (result.match(/\d+\./)) score += 0.1; // Numbered lists
+    
+    return Math.min(score, 1.0);
+  }
+
+  // Estimate token count
+  estimateTokens(text) {
+    return Math.ceil(text.length / 4); // Rough approximation
   }
 
   // Agent-specific processing methods
@@ -350,6 +505,41 @@ Thiết kế UI trực quan và dễ sử dụng.
   // Get task queue status
   getTaskQueue() {
     return [...this.taskQueue];
+  }
+
+  // Get library statistics
+  getLibraryStats() {
+    return this.libraryManager.getLibraryStats();
+  }
+
+  // Search library directly
+  async searchLibraryDirect(query, options = {}) {
+    return this.libraryManager.searchLibrary(query, options);
+  }
+
+  // Get library items by category
+  getLibraryByCategory(category, limit = 50) {
+    return this.libraryManager.getByCategory(category, limit);
+  }
+
+  // Get popular library items
+  getPopularLibraryItems(limit = 20) {
+    return this.libraryManager.getPopularItems(limit);
+  }
+
+  // Get recent library items
+  getRecentLibraryItems(limit = 20) {
+    return this.libraryManager.getRecentItems(limit);
+  }
+
+  // Get library categories
+  getLibraryCategories() {
+    return this.libraryManager.getCategories();
+  }
+
+  // Get library tags
+  getLibraryTags() {
+    return this.libraryManager.getTags();
   }
 
   // Clear completed tasks

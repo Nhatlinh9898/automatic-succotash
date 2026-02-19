@@ -448,6 +448,44 @@ Phân tích chi tiết để sculpting và modeling chính xác.
     return await this.callAI(specializedPrompt, options);
   }
 
+  async processRockFormation(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Rock Formation Specialist. Chuyên phân tích cấu trúc đá, địa chất, erosion.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. LOẠI ĐÁ (sedimentary, igneous, metamorphic characteristics)
+2. CẤU TRÚC (layering, crystallization, texture patterns)
+3. EROSION (weathering effects, water/ice/wind erosion patterns)
+4. MÀU SẮC (mineral composition, oxidation, staining)
+5. ĐỘ CỨNG (hardness levels, fracture patterns)
+6. MÔI TRƯỜNG (geological context, formation conditions)
+
+Phân tích chi tiết để modeling terrain và rock formations chính xác.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processWaterFlow(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Water Flow Specialist. Chuyên mô phỏng dòng nước và fluid dynamics.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. DYNAMICS (flow velocity, turbulence, vortices, eddies)
+2. SURFACE EFFECTS (ripples, waves, splashes, foam)
+3. INTERACTION (collision with objects, terrain following)
+4. REFLECTIONS (light reflection, refraction, transparency)
+5. BEHAVIOR (viscosity, surface tension, cohesion)
+6. ENVIRONMENT (temperature effects, evaporation, condensation)
+
+Phân tích chi tiết để simulation và rendering water chính xác.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
   async processEyeDesign(prompt, options = {}) {
     const specializedPrompt = `
 Bạn là Eye Design Specialist. Chuyên thiết kế mắt và biểu cảm.
@@ -563,10 +601,275 @@ Thiết kế chi tiết cho realistic clothing modeling.
     return await this.callAI(specializedPrompt, options);
   }
 
+  async processStructuralIntegrity(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Structural Integrity Specialist. Chuyên phân tích kết cấu và load bearing.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. LOAD BEARING (weight distribution, support points, stress concentration)
+2. MATERIAL STRENGTH (compression, tension, shear, fatigue resistance)
+3. STRUCTURAL ANALYSIS (FEM, stress testing, deformation analysis)
+4. FOUNDATIONS (footings, piles, ground conditions, settlement)
+5. SAFETY FACTORS (overload capacity, failure modes, redundancy)
+6. OPTIMIZATION (material usage, weight reduction, cost efficiency)
+
+Phân tích chi tiết để structural engineering và modeling.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processArchitecturalStyles(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Architectural Styles Specialist. Chuyên các phong cách kiến trúc và lịch sử.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. PHONG CÁCH KIẾN TRÚC (gothic, roman, greek, modern, colonial)
+2. ĐẶC ĐIỂM THIẾT KẾ (columns, arches, domes, spires, ornamentation)
+3. VẬT LIỆU (stone, marble, concrete, steel, glass, wood)
+4. KỶ NGUYÊN (historical period, cultural influences, technological limitations)
+5. CHI TIẾT TRANG TRÍ (carvings, moldings, frescoes, mosaics)
+6. NGỮ CẢNH (geographic, cultural, religious influences)
+
+Phân tích chi tiết để architectural modeling chính xác.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processGaitAnalysis(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Gait Analysis Specialist. Chuyên phân tích dáng đi và biomechanics.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. BIOMECHANICS (joint movement, muscle activation, skeletal alignment)
+2. WEIGHT DISTRIBUTION (center of gravity, balance points, support phases)
+3. GAIT CYCLES (stance phase, swing phase, double support, cadence)
+4. BALANCE (static equilibrium, dynamic stability, recovery mechanisms)
+5. MOVEMENT PATTERNS (stride length, step width, foot placement)
+6. INDIVIDUAL VARIATIONS (age, gender, body type, injury considerations)
+
+Phân tích chi tiết cho realistic locomotion animation.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processFootContact(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Foot Contact Specialist. Chuyên thiết kế contact points và ground reaction.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. GROUND CONTACT (foot placement, surface adaptation, contact patches)
+2. IMPACT FORCES (landing forces, shock absorption, force distribution)
+3. FRICTION (traction coefficients, slip resistance, surface interaction)
+4. TRACTION (grip patterns, push-off forces, acceleration/deceleration)
+5. FOOT MECHANICS (heel strike, midfoot stance, toe-off, arch behavior)
+6. SURFACE VARIATIONS (hard, soft, slippery, uneven terrain adaptation)
+
+Phân tích chi tiết cho realistic foot-ground interaction.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processMartialTechniques(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Martial Techniques Specialist. Chuyên các kỹ thuật chiến đấu và stances.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. MARTIAL ARTS STYLES (karate, taekwondo, kung fu, boxing, wrestling)
+2. FIGHTING STANCES (ready positions, guard, balance, mobility)
+3. ATTACK TECHNIQUES (strikes, kicks, throws, joint locks, chokes)
+4. DEFENSIVE MOVES (blocks, parries, evasions, counters)
+5. WEAPON TECHNIQUES (sword, staff, nunchaku, spear, knife handling)
+6. COMBAT FLOW (combinations, transitions, range management)
+
+Phân tích chi tiết cho realistic combat animation.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processImpactPhysics(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Impact Physics Specialist. Chuyên mô phỏng va chạm và force transfer.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. IMPACT FORCES (force magnitude, direction, duration, impulse)
+2. RECOIL (reaction forces, energy dissipation, momentum transfer)
+3. RAGDOLL PHYSICS (joint constraints, limb movement, collision response)
+4. COLLISION RESPONSE (elastic/inelastic collisions, deformation, fracture)
+5. FORCE PROPAGATION (shockwaves, vibration, energy distribution)
+6. MATERIAL RESPONSE (stress, strain, failure modes, damage patterns)
+
+Phân tích chi tiết cho realistic impact simulation.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processTopologyFlow(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Topology Flow Specialist. Chuyên thiết kế edge flow và quad layout.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. EDGE FLOW (direction, continuity, loop management, flow lines)
+2. QUAD LAYOUT (quad dominance, clean topology, pole management)
+3. DEFORMATION ZONES (bending areas, articulation points, flexible regions)
+4. ANIMATION READY (joint-friendly topology, weight painting optimization)
+5. DETAIL DISTRIBUTION (high/low poly areas, transition zones)
+6. OPTIMIZATION (vertex count efficiency, render performance)
+
+Phân tích chi tiết cho animation-ready topology.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processSubdivisionOptimization(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Subdivision Optimization Specialist. Chuyên tối ưu subdivision levels.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. SUBDIVISION LEVELS (appropriate smoothness, detail preservation)
+2. DETAIL AREAS (high-priority zones, focus regions, importance mapping)
+3. PERFORMANCE OPTIMIZATION (polygon count management, LOD creation)
+4. EDGE CASES (sharp edges, crease preservation, hard surface handling)
+5. MEMORY EFFICIENCY (vertex optimization, cache-friendly topology)
+6. QUALITY CONTROL (artifact prevention, smoothing issues)
+
+Phân tích chi tiết cho optimal subdivision workflow.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processPBRMaterials(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là PBR Materials Specialist. Chuyên vật lý based rendering và materials.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. ALBEDO (base color, diffuse reflectance, color accuracy)
+2. NORMAL MAPS (surface detail, bump mapping, microgeometry)
+3. ROUGHNESS (surface smoothness, reflection scattering, material feel)
+4. METALLIC (metal vs non-metal distinction, conductivity)
+5. AMBIENT OCCLUSION (contact shadows, cavity shading, depth)
+6. MATERIAL PROPERTIES (transparency, subsurface scattering, emission)
+
+Phân tích chi tiết cho physically accurate materials.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processUVEfficiency(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là UV Efficiency Specialist. Chuyên tối ưu UV space và texel density.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. UV LAYOUT (efficient island arrangement, space utilization)
+2. TEXEL DENSITY (consistent resolution, detail distribution)
+3. SEAM PLACEMENT (hidden seams, minimal distortion, strategic positioning)
+4. ISLAND PACKING (optimal arrangement, minimal wasted space)
+5. DISTORTION CONTROL (angle/area distortion minimization)
+6. TEXTURE EFFICIENCY (resolution optimization, memory usage)
+
+Phân tích chi tiết cho optimal UV workflow.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processForeshadowing(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Foreshadowing Specialist. Chuyên thiết kế foreshadowing và narrative hints.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. SUBTLE HINTS (implicit clues, buried information, early warnings)
+2. CALLBACKS (payoff setup, pattern repetition, thematic echoes)
+3. SYMBOLISM (metaphorical elements, visual cues, thematic objects)
+4. NARRATIVE THREADS (story arcs, character development paths)
+5. TIMING (when to reveal, pacing of hints, buildup strategies)
+6. AUDIENCE ENGAGEMENT (reader involvement, mystery creation)
+
+Phân tích chi tiết cho compelling narrative structure.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processPacingRhythm(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Pacing & Rhythm Specialist. Chuyên nhịp điệu câu chuyện và tension.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. STORY PACING (narrative speed, scene length, transition timing)
+2. TENSION BUILDING (suspense creation, anticipation, pressure points)
+3. EMOTIONAL PEAKS (climax moments, emotional releases, impact scenes)
+4. BREATHING ROOM (reflection periods, character development, exposition)
+5. RHYTHM PATTERNS (action/dialogue balance, scene variation)
+6. AUDIENCE RETENTION (attention management, engagement maintenance)
+
+Phân tích chi tiết cho optimal story flow.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processVisualHierarchy(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Visual Hierarchy Specialist. Chuyên thiết kế hierarchy và focal points.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. FOCAL POINTS (primary focus, secondary elements, attention guides)
+2. EYE TRACKING (visual path, reading patterns, scan behavior)
+3. ATTENTION GUIDANCE (leading lines, color emphasis, size hierarchy)
+4. IMPORTANCE LEVELS (priority ordering, information architecture)
+5. VISUAL WEIGHT (balance, contrast, emphasis techniques)
+6. USER EXPERIENCE (intuitive navigation, clear communication)
+
+Phân tích chi tiết cho effective visual design.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processResponsiveAdaptation(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Responsive Adaptation Specialist. Chuyên thiết kế responsive và adaptation.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. BREAKPOINTS (screen size thresholds, device categories)
+2. SCREEN SIZES (mobile, tablet, desktop, ultra-wide considerations)
+3. DEVICE ADAPTATION (touch vs mouse, performance considerations)
+4. ORIENTATION CHANGES (portrait vs landscape, layout flexibility)
+5. CONTENT PRIORITY (information hierarchy, progressive disclosure)
+6. PERFORMANCE OPTIMIZATION (load times, asset management)
+
+Phân tích chi tiết cho seamless responsive design.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
   // Helper method to call AI
   async callAI(prompt, options = {}) {
-    const { default: AIService } = await import('./aiService.js');
-    const aiService = new AIService();
+    const aiService = this.aiService || (this.aiService = await (await import('./aiService.js')).default);
     return await aiService.generatePrompt(prompt, {
       ...options,
       maxTokens: 1000,

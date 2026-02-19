@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import Header from './components/Header'
 import PromptInput from './components/PromptInput'
 import ResponseDisplay from './components/ResponseDisplay'
@@ -20,8 +21,9 @@ import FrameworkIntegration from './components/FrameworkIntegration'
 import aiService from './services/aiService'
 import './App.css'
 
-function App() {
-  const [activeTab, setActiveTab] = useState('home')
+// Component to handle routing logic
+function AppContent() {
+  const location = useLocation();
   const [prompt, setPrompt] = useState('')
   const [response, setResponse] = useState('')
   const [loading, setLoading] = useState(false)
@@ -92,69 +94,93 @@ function App() {
     localStorage.setItem('ai-settings', JSON.stringify(newSettings))
   }
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'home':
-        return (
-          <div className="home-content">
-            <PromptInput 
-              onGenerate={generatePrompt}
-              loading={loading}
-              disabled={false}
-            />
-            <ResponseDisplay 
-              response={response}
-              loading={loading}
-              error={error}
-            />
-          </div>
-        )
-      case 'history':
-        return <History />
-      case 'settings':
-        return (
-          <Settings 
-            settings={settings}
-            onSettingsChange={handleSettingsChange}
-          />
-        )
-      case 'characters':
-        return <CharacterPrompts />
-      case 'showcase':
-        return <FeatureShowcase />
-      case 'agents':
-        return <AgentSystemDemo />
-      case 'webxr':
-        return <WebXRDemo />
-      case 'particles':
-        return <ParticleEffectsDemo />
-      case 'character-generator':
-        return <AICharacterGenerator />
-      case 'physics':
-        return <PhysicsPlayground />
-      case 'collaboration':
-        return <RealtimeCollaboration />
-      case 'terrain':
-        return <TerrainGenerator />
-      case 'audio-visualizer':
-        return <AudioVisualizer />
-      case 'shader-editor':
-        return <ShaderEditor />
-      case 'framework-integration':
-        return <FrameworkIntegration />
-      default:
-        return null
-    }
-  }
+  // Get active tab from current path
+  const getActiveTabFromPath = () => {
+    const path = location.pathname;
+    if (path === '/' || path === '/home') return 'home';
+    if (path.startsWith('/history')) return 'history';
+    if (path.startsWith('/settings')) return 'settings';
+    if (path.startsWith('/characters')) return 'characters';
+    if (path.startsWith('/showcase')) return 'showcase';
+    if (path.startsWith('/agents')) return 'agents';
+    if (path.startsWith('/webxr')) return 'webxr';
+    if (path.startsWith('/particles')) return 'particles';
+    if (path.startsWith('/character-generator')) return 'character-generator';
+    if (path.startsWith('/physics')) return 'physics';
+    if (path.startsWith('/collaboration')) return 'collaboration';
+    if (path.startsWith('/terrain')) return 'terrain';
+    if (path.startsWith('/audio-visualizer')) return 'audio-visualizer';
+    if (path.startsWith('/shader-editor')) return 'shader-editor';
+    if (path.startsWith('/framework-integration')) return 'framework-integration';
+    return 'home';
+  };
+
+  const activeTab = getActiveTabFromPath();
 
   return (
+    <div className="app">
+      <Header activeTab={activeTab} />
+      <main className="app-main">
+        <Routes>
+          <Route path="/" element={
+            <div className="home-content">
+              <PromptInput 
+                onGenerate={generatePrompt}
+                loading={loading}
+                disabled={false}
+              />
+              <ResponseDisplay 
+                response={response}
+                loading={loading}
+                error={error}
+              />
+            </div>
+          } />
+          <Route path="/home" element={
+            <div className="home-content">
+              <PromptInput 
+                onGenerate={generatePrompt}
+                loading={loading}
+                disabled={false}
+              />
+              <ResponseDisplay 
+                response={response}
+                loading={loading}
+                error={error}
+              />
+            </div>
+          } />
+          <Route path="/history" element={<History />} />
+          <Route path="/settings" element={
+            <Settings 
+              settings={settings}
+              onSettingsChange={handleSettingsChange}
+            />
+          } />
+          <Route path="/characters" element={<CharacterPrompts />} />
+          <Route path="/showcase" element={<FeatureShowcase />} />
+          <Route path="/agents" element={<AgentSystemDemo />} />
+          <Route path="/webxr" element={<WebXRDemo />} />
+          <Route path="/particles" element={<ParticleEffectsDemo />} />
+          <Route path="/character-generator" element={<AICharacterGenerator />} />
+          <Route path="/physics" element={<PhysicsPlayground />} />
+          <Route path="/collaboration" element={<RealtimeCollaboration />} />
+          <Route path="/terrain" element={<TerrainGenerator />} />
+          <Route path="/audio-visualizer" element={<AudioVisualizer />} />
+          <Route path="/shader-editor" element={<ShaderEditor />} />
+          <Route path="/framework-integration" element={<FrameworkIntegration />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
+
+function App() {
+  return (
     <ErrorBoundary>
-      <div className="app">
-        <Header activeTab={activeTab} onTabChange={setActiveTab} />
-        <main className="app-main">
-          {renderContent()}
-        </main>
-      </div>
+      <Router>
+        <AppContent />
+      </Router>
     </ErrorBoundary>
   )
 }

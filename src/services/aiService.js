@@ -3,9 +3,12 @@ import RequestQueueManager from './requestQueueManager.js';
 
 class AIService {
   constructor() {
-    // Configure your AI API endpoint here
-    this.apiEndpoint = process.env.REACT_APP_AI_API_ENDPOINT || 'http://localhost:8080/api/ai';
-    this.batchEndpoint = process.env.REACT_APP_AI_BATCH_ENDPOINT || 'http://localhost:8080/api/ai/batch';
+    // Configure your AI API endpoint here - using relative URLs for proxy
+    this.apiEndpoint = process.env.REACT_APP_AI_API_ENDPOINT || '/api/ai';
+    this.batchEndpoint = process.env.REACT_APP_AI_BATCH_ENDPOINT || '/api/ai/batch';
+    this.agentsEndpoint = process.env.REACT_APP_AI_AGENTS_ENDPOINT || '/api/agents';
+    this.servicesEndpoint = process.env.REACT_APP_AI_SERVICES_ENDPOINT || '/api/services/status';
+    this.libraryEndpoint = process.env.REACT_APP_AI_LIBRARY_ENDPOINT || '/api/library';
     this.apiKey = process.env.REACT_APP_AI_API_KEY || '';
     
     // Initialize request queue manager
@@ -337,6 +340,78 @@ class AIService {
     const vietnameseRatio = (text.match(/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/gi) || []).length / text.length;
     const avgCharsPerToken = vietnameseRatio > 0.3 ? 2.5 : 4;
     return Math.ceil(text.length / avgCharsPerToken);
+  }
+
+  // Get available agents
+  async getAgents() {
+    try {
+      const response = await fetch(this.agentsEndpoint);
+      if (!response.ok) throw new Error('Failed to fetch agents');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching agents:', error);
+      throw error;
+    }
+  }
+
+  // Process with specific agent
+  async processWithAgent(prompt, agentType, options = {}) {
+    try {
+      const response = await fetch(`${this.agentsEndpoint}/process`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': this.apiKey ? `Bearer ${this.apiKey}` : '',
+        },
+        body: JSON.stringify({
+          prompt,
+          agentType,
+          options
+        })
+      });
+
+      if (!response.ok) throw new Error('Agent processing failed');
+      return await response.json();
+    } catch (error) {
+      console.error('Error processing with agent:', error);
+      throw error;
+    }
+  }
+
+  // Get service status
+  async getServiceStatus() {
+    try {
+      const response = await fetch(this.servicesEndpoint);
+      if (!response.ok) throw new Error('Failed to fetch service status');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching service status:', error);
+      throw error;
+    }
+  }
+
+  // Search library
+  async searchLibrary(query, type, limit = 10) {
+    try {
+      const response = await fetch(`${this.libraryEndpoint}/search`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': this.apiKey ? `Bearer ${this.apiKey}` : '',
+        },
+        body: JSON.stringify({
+          query,
+          type,
+          limit
+        })
+      });
+
+      if (!response.ok) throw new Error('Library search failed');
+      return await response.json();
+    } catch (error) {
+      console.error('Error searching library:', error);
+      throw error;
+    }
   }
 
   // Mock implementation for development without API

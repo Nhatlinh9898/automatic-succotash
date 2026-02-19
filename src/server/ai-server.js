@@ -1,10 +1,30 @@
-// Simple Node.js server for AI functionality
+// Enhanced AI Server with integrated services
 import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import os from 'os';
+import aiService from '../services/aiService.js';
+import agentSystem from '../services/agentSystem.js';
+import libraryManager from '../services/libraryManager.js';
+// Temporarily disabled due to missing methods
+// import MicroAgentSystem from '../services/microAgentSystem.js';
+// import SubAgentSystem from '../services/subAgentSystem.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+// Initialize services
+// Micro-agent system temporarily disabled
+const microAgentSystem = null;
+
+// Service status tracking
+const serviceStatus = {
+  aiService: 'initialized',
+  agentSystem: 'initialized', 
+  libraryManager: 'initialized',
+  microAgentSystem: 'disabled',
+  subAgentSystem: 'disabled'
+};
 
 // Middleware
 app.use(cors());
@@ -60,13 +80,13 @@ const mockAIResponses = {
   'default': 'This is an interesting prompt! Let me help you explore this idea further with creative suggestions and detailed analysis.'
 };
 
-// AI endpoint with enhanced security and monitoring
+// Enhanced AI endpoint with integrated services
 app.post('/api/ai', async (req, res) => {
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const startTime = Date.now();
   
   try {
-    const { prompt, model = 'gpt-3.5-turbo', max_tokens = 1000, temperature = 0.7, agent = 'unknown' } = req.body;
+    const { prompt, model = 'gpt-3.5-turbo', max_tokens = 1000, temperature = 0.7, agent = 'unknown', useAgentSystem = true } = req.body;
     
     // Log request for monitoring
     console.log(`[${requestId}] AI Request - Agent: ${agent}, IP: ${req.ip}, Prompt length: ${prompt?.length || 0}`);
@@ -95,40 +115,50 @@ app.post('/api/ai', async (req, res) => {
       return res.status(400).json({ error: 'Invalid content detected' });
     }
     
-    // Simulate processing time with variability based on load
-    const baseDelay = 500;
-    const variableDelay = Math.random() * 1500;
-    const loadDelay = Math.min(500, Date.now() % 1000); // Simulate server load
-    await new Promise(resolve => setTimeout(resolve, baseDelay + variableDelay + loadDelay));
+    let response;
+    let detectedAgent = agent;
     
-    // Determine response type based on prompt content
-    let responseType = 'default';
-    const promptLower = prompt.toLowerCase();
-    
-    if (promptLower.includes('character') || promptLower.includes('person')) {
-      responseType = 'character';
-    } else if (promptLower.includes('story') || promptLower.includes('plot')) {
-      responseType = 'story';
-    } else if (promptLower.includes('world') || promptLower.includes('setting')) {
-      responseType = 'worldbuilding';
+    // Use Agent System if enabled
+    if (useAgentSystem) {
+      try {
+        detectedAgent = agentSystem.detectAgent(prompt);
+        console.log(`[${requestId}] Detected agent: ${detectedAgent}`);
+        
+        // Process with specialized agent
+        const agentInstance = agentSystem.agents.get(detectedAgent);
+        if (agentInstance && typeof agentInstance.process === 'function') {
+          const agentResult = await agentInstance.process(prompt, { model, max_tokens, temperature });
+          response = {
+            response: agentResult.response || agentResult.content || agentResult,
+            model,
+            agent: detectedAgent,
+            usage: agentResult.usage || {
+              prompt_tokens: Math.floor(prompt.length / 4),
+              completion_tokens: Math.floor((agentResult.response || agentResult || '').length / 4),
+              total_tokens: Math.floor((prompt.length + (agentResult.response || agentResult || '').length) / 4)
+            },
+            timestamp: new Date().toISOString(),
+            requestId,
+            processingTime: Date.now() - startTime,
+            agentDetected: detectedAgent,
+            processingMethod: 'agent_system'
+          };
+        } else {
+          // Fallback to AI Service
+          response = await processWithAIService(prompt, { model, max_tokens, temperature, agent: detectedAgent }, requestId, startTime);
+        }
+      } catch (error) {
+        console.warn(`[${requestId}] Agent system failed, falling back to AI service:`, error.message);
+        response = await processWithAIService(prompt, { model, max_tokens, temperature, agent }, requestId, startTime);
+      }
+    } else {
+      // Use AI Service directly
+      response = await processWithAIService(prompt, { model, max_tokens, temperature, agent }, requestId, startTime);
     }
-    
-    const response = {
-      response: mockAIResponses[responseType],
-      model,
-      usage: {
-        prompt_tokens: Math.floor(prompt.length / 4),
-        completion_tokens: Math.floor(mockAIResponses[responseType].length / 4),
-        total_tokens: Math.floor((prompt.length + mockAIResponses[responseType].length) / 4)
-      },
-      timestamp: new Date().toISOString(),
-      requestId,
-      processingTime: Date.now() - startTime,
-      agent
-    };
     
     console.log(`[${requestId}] AI Response completed in ${Date.now() - startTime}ms`);
     res.json(response);
+    
   } catch (error) {
     console.error(`[${requestId}] AI API Error:`, error);
     res.status(500).json({ 
@@ -138,6 +168,31 @@ app.post('/api/ai', async (req, res) => {
     });
   }
 });
+
+// Helper function to process with AI Service
+async function processWithAIService(prompt, options, requestId, startTime) {
+  try {
+    const result = await aiService.generatePrompt(prompt, options);
+    
+    return {
+      response: result,
+      model: options.model || 'gpt-3.5-turbo',
+      agent: options.agent || 'unknown',
+      usage: {
+        prompt_tokens: Math.floor(prompt.length / 4),
+        completion_tokens: Math.floor(result.length / 4),
+        total_tokens: Math.floor((prompt.length + result.length) / 4)
+      },
+      timestamp: new Date().toISOString(),
+      requestId,
+      processingTime: Date.now() - startTime,
+      processingMethod: 'ai_service'
+    };
+  } catch (error) {
+    console.error(`[${requestId}] AI Service Error:`, error);
+    throw error;
+  }
+}
 
 // Batch processing endpoint for multiple requests
 app.post('/api/ai/batch', strictLimiter, async (req, res) => {
@@ -221,6 +276,198 @@ app.post('/api/ai/batch', strictLimiter, async (req, res) => {
   }
 });
 
+// Multi-agent processing endpoint
+app.post('/api/agents/process', strictLimiter, async (req, res) => {
+  const requestId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const startTime = Date.now();
+  
+  try {
+    const { prompt, agentType, options = {} } = req.body;
+    
+    if (!prompt) {
+      return res.status(400).json({ error: 'Prompt is required' });
+    }
+    
+    console.log(`[${requestId}] Agent Process Request - Type: ${agentType || 'auto-detect'}`);
+    
+    let selectedAgent = agentType;
+    let result;
+    
+    if (!selectedAgent) {
+      selectedAgent = agentSystem.detectAgent(prompt);
+    }
+    
+    const agentInstance = agentSystem.agents.get(selectedAgent);
+    if (!agentInstance) {
+      return res.status(400).json({ error: `Agent '${selectedAgent}' not found` });
+    }
+    
+    // Process with specialized agent
+    if (typeof agentInstance.process === 'function') {
+      result = await agentInstance.process(prompt, options);
+    } else {
+      return res.status(500).json({ error: `Agent '${selectedAgent}' process method not available` });
+    }
+    
+    const response = {
+      requestId,
+      agent: selectedAgent,
+      agentName: agentInstance.name,
+      prompt,
+      result,
+      timestamp: new Date().toISOString(),
+      processingTime: Date.now() - startTime,
+      capabilities: agentInstance.capabilities
+    };
+    
+    console.log(`[${requestId}] Agent processing completed in ${Date.now() - startTime}ms`);
+    res.json(response);
+    
+  } catch (error) {
+    console.error(`[${requestId}] Agent Process Error:`, error);
+    res.status(500).json({ 
+      error: 'Agent processing failed',
+      requestId,
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Get available agents
+app.get('/api/agents', (req, res) => {
+  const agents = [];
+  
+  agentSystem.agents.forEach((agent, key) => {
+    agents.push({
+      id: key,
+      name: agent.name,
+      description: agent.description,
+      capabilities: agent.capabilities
+    });
+  });
+  
+  res.json({
+    agents,
+    total: agents.length,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Library management endpoints
+app.get('/api/library/status', (req, res) => {
+  try {
+    const status = libraryManager.getStatus();
+    res.json({
+      status,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/library/search', async (req, res) => {
+  try {
+    const { query, type, limit = 10 } = req.body;
+    const results = await libraryManager.search(query, { type, limit });
+    
+    res.json({
+      query,
+      results,
+      total: results.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Micro-agent system endpoint
+app.post('/api/micro-agents/process', strictLimiter, async (req, res) => {
+  const requestId = `micro_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
+  try {
+    if (!microAgentSystem) {
+      return res.status(503).json({ error: 'Micro-agent system not available' });
+    }
+    
+    const { task, context, options = {} } = req.body;
+    
+    if (!task) {
+      return res.status(400).json({ error: 'Task is required' });
+    }
+    
+    console.log(`[${requestId}] Micro-agent processing: ${task}`);
+    
+    const result = await microAgentSystem.processTask(task, context, options);
+    
+    res.json({
+      requestId,
+      task,
+      result,
+      timestamp: new Date().toISOString(),
+      processingTime: Date.now() - Date.now()
+    });
+    
+  } catch (error) {
+    console.error(`[${requestId}] Micro-agent Error:`, error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Sub-agent system endpoint
+app.post('/api/sub-agents/orchestrate', strictLimiter, async (req, res) => {
+  const requestId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
+  try {
+    if (!subAgentSystem) {
+      return res.status(503).json({ error: 'Sub-agent system not available' });
+    }
+    
+    const { mainTask, subTasks, options = {} } = req.body;
+    
+    if (!mainTask) {
+      return res.status(400).json({ error: 'Main task is required' });
+    }
+    
+    console.log(`[${requestId}] Sub-agent orchestration: ${mainTask}`);
+    
+    const result = await subAgentSystem.orchestrate(mainTask, subTasks, options);
+    
+    res.json({
+      requestId,
+      mainTask,
+      subTasks,
+      result,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error(`[${requestId}] Sub-agent Error:`, error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Service status endpoint
+app.get('/api/services/status', (req, res) => {
+  const queueStats = aiService.queueManager.getStats();
+  
+  res.json({
+    services: serviceStatus,
+    queue: queueStats,
+    agents: {
+      total: agentSystem.agents.size,
+      available: Array.from(agentSystem.agents.keys())
+    },
+    library: {
+      status: 'connected',
+      manager: 'LibraryManager'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Enhanced health check endpoint with system status
 app.get('/health', (req, res) => {
   const memoryUsage = process.memoryUsage();
@@ -237,36 +484,78 @@ app.get('/health', (req, res) => {
         external: Math.round(memoryUsage.external / 1024 / 1024) + 'MB'
       },
       load: {
-        average: require('os').loadavg(),
-        cpus: require('os').cpus().length
+        average: os.loadavg(),
+        cpus: os.cpus().length
       }
     },
     endpoints: {
       ai: '/api/ai',
       batch: '/api/ai/batch',
+      agents: '/api/agents',
+      agentProcess: '/api/agents/process',
+      library: '/api/library',
+      microAgents: '/api/micro-agents',
+      subAgents: '/api/sub-agents',
+      services: '/api/services/status',
       health: '/health'
     },
     rateLimits: {
       global: '100 requests per 15 minutes',
       ai: '10 requests per minute', 
-      batch: '3 requests per minute'
+      batch: '3 requests per minute',
+      agents: '3 requests per minute',
+      microAgents: '3 requests per minute',
+      subAgents: '3 requests per minute'
+    },
+    services: {
+      aiService: serviceStatus.aiService,
+      agentSystem: serviceStatus.agentSystem,
+      libraryManager: serviceStatus.libraryManager,
+      microAgentSystem: serviceStatus.microAgentSystem,
+      subAgentSystem: serviceStatus.subAgentSystem
     }
   });
 });
 
 // Request status monitoring endpoint
 app.get('/api/status', (req, res) => {
+  const queueStats = aiService.queueManager.getStats();
+  
   res.json({
-    message: 'Server is running and accepting requests',
+    message: 'Enhanced AI Server with integrated services is running',
     timestamp: new Date().toISOString(),
-    version: '2.0.0',
+    version: '3.0.0',
     features: [
       'Enhanced rate limiting',
       'Request validation and security',
       'Batch processing support',
       'Request monitoring and logging',
-      'Suspicious content detection'
-    ]
+      'Suspicious content detection',
+      'Multi-agent system integration',
+      'AI Service with queue management',
+      'Library management system',
+      'Micro-agent processing',
+      'Sub-agent orchestration'
+    ],
+    services: {
+      aiService: {
+        status: serviceStatus.aiService,
+        queue: queueStats
+      },
+      agentSystem: {
+        status: serviceStatus.agentSystem,
+        agents: agentSystem.agents.size
+      },
+      libraryManager: {
+        status: serviceStatus.libraryManager
+      },
+      microAgentSystem: {
+        status: serviceStatus.microAgentSystem
+      },
+      subAgentSystem: {
+        status: serviceStatus.subAgentSystem
+      }
+    }
   });
 });
 

@@ -741,6 +741,7 @@ Mô tả chi tiết để terrain modeling và texturing.
   async processEnvironmentArchitecture(prompt, options = {}) {
     const specializedPrompt = `
 Bạn là Architecture Specialist. Chuyên thiết kế công trình.
+
 Phân tích yêu cầu: "${prompt}"
 
 Cung cấp thông tin chi tiết về:
@@ -756,17 +757,355 @@ Mô tả chi tiết để architectural modeling.
     return await this.callAI(specializedPrompt, options);
   }
 
-  // Helper method to call AI
-  async callAI(prompt, options = {}) {
-    const { default: AIService } = await import('./aiService.js');
-    const aiService = new AIService();
-    return await aiService.generatePrompt(prompt, {
-      ...options,
-      maxTokens: 1200,
-      temperature: 0.7
-    });
+  async processEnvironmentVegetation(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Vegetation & Nature Specialist. Chuyên thiết kế cây cối và thực vật.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. LOẠI CÂY (trees, bushes, flowers, grass types)
+2. ĐẶC ĐIỂM SINH HỌC (leaf shape, bark texture, root systems)
+3. MÙA VÀ TÁC ĐỘNG (seasonal changes, growth patterns)
+4. PHÂN BỐ (clustering, spacing, natural arrangements)
+5. TƯƠNG TÁC VỚI MÔI TRƯỜNG (soil, water, sunlight needs)
+6. CHI TIẾT NHỎ (branches, twigs, leaves, flowers, fruits)
+
+Mô tả chi tiết để vegetation modeling.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
   }
 
+  async processEnvironmentLighting(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Lighting & Atmosphere Specialist. Chuyên thiết kế ánh sáng và atmosphere.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. NGUỒN ÁNH SÁNG (sun, moon, artificial lights, fire)
+2. CHẤT LƯỢNG ÁNH SÁNG (intensity, color temperature, softness)
+3. BÓNG (shadow types, soft shadows, ambient occlusion)
+4. THỜI TIẾT (rain, fog, snow, wind effects on light)
+5. THỜI GIAN TRONG NGÀY (dawn, noon, dusk, night characteristics)
+6. KHÔNG KHÍ (mood, atmosphere, emotional impact)
+
+Mô tả chi tiết để lighting và atmosphere design.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processAnimationLocomotion(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Locomotion Specialist. Chuyên tạo chuyển động di chuyển.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. LOẠI CHUYỂN ĐỘNG (walking, running, jumping, swimming, climbing)
+2. BIỂU CẢM CƠ THỂ (body language, posture, movement quality)
+3. TỐC ĐỘ VÀ NHỊP ĐỘ (speed variations, rhythm, cadence)
+4. TƯƠNG TÁC VỚI MÔI TRƯỜNG (ground contact, obstacles, terrain)
+5. ĐẶC ĐIỂM CÁ NHÂN (age, fitness, personality affecting movement)
+6. CÁC CHUYỂN ĐỘNG CHUYÊN BIỆT (athletic movements, combat stances)
+
+Mô tả chi tiết để locomotion animation.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processAnimationCombat(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Combat Specialist. Chuyên tạo chuyển động chiến đấu.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. LOẠI TẤN CÔNG (strikes, kicks, throws, weapon attacks)
+2. PHÒNG THỦ (blocks, parries, evasions, counters)
+3. PHÉP THUẬT (spell casting, magical effects, energy attacks)
+4. VŨ KHÍ (handling different weapons, weapon-specific movements)
+5. REACTIONS (impact responses, pain reactions, fatigue)
+6. COMBAT FLOW (combinations, transitions between moves)
+
+Mô tả chi tiết để combat animation.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processAnimationFacial(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Facial Animation Specialist. Chuyên tạo biểu cảm khuôn mặt.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. BIỂU CẢM CƠ BẢN (happy, sad, angry, surprised, fearful)
+2. CHI TIẾT MẶT (eye movement, eyebrow raises, mouth shapes)
+3. LIP SYNC (mouth shapes for different phonemes, speech patterns)
+4. CÁC CHUYỂN ĐỘNG NHỎ (blinking, breathing, micro-expressions)
+5. CÁC BIỂU CẢM PHỨC TẠP (mixed emotions, subtle feelings)
+6. TÍNH CÁCH CÁ NHÂN (how personality affects facial expressions)
+
+Mô tả chi tiết để facial animation.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processAnimationIdle(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Idle & Gesture Specialist. Chuyên tạo tư thế đứng và cử chỉ.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. TƯ THẾ ĐỨNG (posture, stance, weight distribution)
+2. CỬ CHỈ (hand gestures, arm movements, body language)
+3. THỞ (breathing patterns, chest movement, subtle body shifts)
+4. WEIGHT SHIFT (natural balance adjustments, subtle movements)
+5. CÁC CHUYỂN ĐỘNG NHỎ (fidgeting, adjusting clothing, looking around)
+6. TÍNH CÁCH TRONG TƯ THẾ (how personality affects idle stance)
+
+Mô tả chi tiết để idle và gesture animation.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processTechnicalModeling(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là 3D Modeling Specialist. Chuyên modeling và topology.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. POLYGON MODELING (vertex placement, edge flow, face creation)
+2. TOPOLOGY (clean edge loops, animation-friendly structure)
+3. MESH OPTIMIZATION (polygon count reduction, efficiency)
+4. SUBDIVISION (smooth mesh creation, detail levels)
+5. SCULPTING (digital sculpting techniques, detail work)
+6. TECHNICAL REQUIREMENTS (game engine compatibility, render optimization)
+
+Mô tả chi tiết để 3D modeling workflow.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processTechnicalTexturing(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Texturing & Materials Specialist. Chuyên UV mapping và materials.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. UV MAPPING (efficient unwrapping, minimal distortion)
+2. TEXTURE CREATION (diffuse, normal, specular, roughness maps)
+3. MATERIALS (PBR materials, physically accurate properties)
+4. SHADERS (custom shader creation, visual effects)
+5. SURFACE PROPERTIES (reflection, transparency, emission)
+6. OPTIMIZATION (texture resolution, memory usage)
+
+Mô tả chi tiết để texturing và material creation.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processTechnicalRigging(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Rigging & Skeleton Specialist. Chuyên tạo skeleton và bones.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. SKELETON CREATION (bone hierarchy, joint placement)
+2. BONE PLACEMENT (strategic positioning for deformation)
+3. CONSTRAINTS (IK, FK, limits, drivers for realistic movement)
+4. SKINNING (weight painting, vertex influence, smooth binding)
+5. WEIGHT PAINTING (efficient weight distribution, cleanup)
+6. CONTROLS (user-friendly rig interface, animation controls)
+
+Mô tả chi tiết để rigging và skeleton setup.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processTechnicalOptimization(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Performance Optimization Specialist. Chuyên tối ưu performance.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. PERFORMANCE (FPS targets, bottleneck identification)
+2. LOD CREATION (level of detail models, distance-based switching)
+3. BATCHING (draw call reduction, instancing, combining meshes)
+4. DRAW CALLS (rendering optimization, GPU efficiency)
+5. MEMORY OPTIMIZATION (RAM/VRAM usage, texture compression)
+6. PROFILING (performance analysis, optimization strategies)
+
+Mô tả chi tiết để performance optimization.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processStoryPlot(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Plot Development Specialist. Chuyên phát triển cốt truyện.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. PLOT DEVELOPMENT (story structure, narrative arc)
+2. STORY ARCS (character development, transformation journeys)
+3. PLOT TWISTS (surprise elements, unexpected revelations)
+4. NARRATIVE STRUCTURE (three-act structure, setup/confrontation/resolution)
+5. PACING (story rhythm, tension and release timing)
+6. THEMES (underlying messages, symbolic elements)
+
+Mô tả chi tiết để compelling storytelling.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processStoryDialogue(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Dialogue & Voice Specialist. Chuyên viết dialogue và character voice.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. DIALOGUE WRITING (natural conversation, realistic speech patterns)
+2. CHARACTER VOICE (unique speech patterns, vocabulary, tone)
+3. CONVERSATION FLOW (natural back-and-forth, pacing)
+4. TONE (emotional context, mood, attitude)
+5. DIALECT (regional speech patterns, cultural influences)
+6. SUBTEXT (hidden meanings, underlying emotions)
+
+Mô tả chi tiết để authentic dialogue writing.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processStoryQuest(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Quest Design Specialist. Chuyên thiết kế quest và mission.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. QUEST DESIGN (compelling objectives, engaging tasks)
+2. MISSION STRUCTURE (clear goals, logical progression)
+3. OBJECTIVES (specific, measurable, achievable targets)
+4. REWARDS (meaningful incentives, progression systems)
+5. QUEST CHAINS (connected missions, narrative progression)
+6. PLAYER MOTIVATION (intrinsic/extrinsic rewards, engagement)
+
+Mô tả chi tiết để engaging quest design.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processStoryLore(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Lore & World-building Specialist. Chuyên xây dựng lore và history.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. LORE CREATION (backstory, mythology, world history)
+2. WORLD HISTORY (timeline, major events, historical periods)
+3. CULTURES (societies, customs, traditions, values)
+4. RELIGIONS (belief systems, deities, practices, rituals)
+5. GEOGRAPHY (locations, regions, physical world features)
+6. CONSISTENCY (maintaining logical coherence across lore)
+
+Mô tả chi tiết để rich world-building.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processUILayout(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là UI Layout Specialist. Chuyên thiết kế layout và composition.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. LAYOUT DESIGN (element arrangement, spatial organization)
+2. COMPOSITION (visual balance, harmony, unity)
+3. VISUAL HIERARCHY (importance ordering, emphasis)
+4. GRID SYSTEMS (structured layouts, alignment, consistency)
+5. SPACING (padding, margins, white space usage)
+6. RESPONSIVENESS (adaptation to different screen sizes)
+
+Mô tả chi tiết để effective UI layout design.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processUIInteractive(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Interactive Elements Specialist. Chuyên thiết kế buttons và interactions.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. BUTTON DESIGN (click targets, visual feedback, states)
+2. CONTROLS (input methods, sliders, dropdowns, checkboxes)
+3. INTERACTIONS (hover effects, active states, focus indicators)
+4. FEEDBACK (visual responses, animations, transitions)
+5. TRANSITIONS (smooth state changes, micro-interactions)
+6. ACCESSIBILITY (keyboard navigation, screen reader support)
+
+Mô tả chi tiết để intuitive interactive design.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processUIVisual(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là Visual Design Specialist. Chuyên thiết kế colors và typography.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. COLOR THEORY (palette selection, harmony, contrast)
+2. TYPOGRAPHY (font selection, readability, hierarchy)
+3. ICON DESIGN (symbolic representation, clarity, consistency)
+4. GRAPHICS (illustrations, images, visual elements)
+5. BRANDING (identity, logo, style guide consistency)
+6. VISUAL CONSISTENCY (maintaining design language)
+
+Mô tả chi tiết để cohesive visual design.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  async processUXFlow(prompt, options = {}) {
+    const specializedPrompt = `
+Bạn là UX Flow Specialist. Chuyên thiết kế user flow và navigation.
+
+Phân tích yêu cầu: "${prompt}"
+
+Cung cấp thông tin chi tiết về:
+1. USER FLOW (journey mapping, task completion paths)
+2. NAVIGATION (menu systems, wayfinding, information architecture)
+3. USABILITY (ease of use, intuitive design, learning curve)
+4. ACCESSIBILITY (inclusive design, assistive technology support)
+5. USER JOURNEY (emotional mapping, touchpoint analysis)
+6. EXPERIENCE OPTIMIZATION (friction reduction, delight factors)
+
+Mô tả chi tiết để seamless user experience design.
+    `.trim();
+    return await this.callAI(specializedPrompt, options);
+  }
+
+  // Helper method to call AI
+  async callAI(prompt, options = {}) {
+    const aiService = this.aiService || (this.aiService = await (await import('./aiService.js')).default);
+    return await aiService.generatePrompt(prompt, options);
+  }
+
+  // ... (rest of the code remains the same)
   // Get all sub-agents for a parent agent
   getSubAgentsForParent(parentAgent) {
     return Array.from(this.subAgents.entries())

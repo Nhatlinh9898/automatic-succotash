@@ -51,23 +51,28 @@ class LibraryManager {
   // Initialize library from storage
   initializeLibrary() {
     try {
-      // Load from localStorage if available
-      const savedLibrary = localStorage.getItem('agentLibrary');
-      const savedMetadata = localStorage.getItem('agentLibraryMetadata');
-      
-      if (savedLibrary) {
-        const libraryData = JSON.parse(savedLibrary);
-        libraryData.forEach(item => {
-          this.library.set(item.id, item);
-          this.updateIndexes(item);
-        });
-      }
-      
-      if (savedMetadata) {
-        const metadata = JSON.parse(savedMetadata);
-        this.stats = { ...this.stats, ...metadata.stats };
-        this.categories = new Map(metadata.categories || []);
-        this.tags = new Map(metadata.tags || []);
+      // Load from localStorage if available (browser environment)
+      if (typeof localStorage !== 'undefined') {
+        const savedLibrary = localStorage.getItem('agentLibrary');
+        const savedMetadata = localStorage.getItem('agentLibraryMetadata');
+        
+        if (savedLibrary) {
+          const libraryData = JSON.parse(savedLibrary);
+          libraryData.forEach(item => {
+            this.library.set(item.id, item);
+            this.updateIndexes(item);
+          });
+        }
+        
+        if (savedMetadata) {
+          const metadata = JSON.parse(savedMetadata);
+          this.stats = { ...this.stats, ...metadata.stats };
+          this.categories = new Map(metadata.categories || []);
+          this.tags = new Map(metadata.tags || []);
+        }
+      } else {
+        // Node.js server environment - initialize with empty library
+        console.log('LibraryManager: Running in Node.js environment, using in-memory storage');
       }
       
       console.log('Library initialized with', this.library.size, 'items');

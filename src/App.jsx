@@ -10,6 +10,7 @@ import { WebXRDemo } from './components/features/webxr'
 import Web3DDemo from './components/Web3DDemo'
 import SimpleFrameworkTest from './components/SimpleFrameworkTest'
 import Character3DGenerator from './components/Character3DGenerator'
+import VoiceGenerator from './components/VoiceGenerator'
 import aiService from './services/aiService'
 import './App.css'
 
@@ -114,6 +115,7 @@ function AppContent() {
     if (path.startsWith('/web3d-demo')) return 'web3d-demo';
     if (path.startsWith('/simple-test')) return 'simple-test';
     if (path.startsWith('/character-3d')) return 'character-3d';
+    if (path.startsWith('/voice-generator')) return 'voice-generator';
     return 'home';
   };
 
@@ -176,6 +178,7 @@ function AppContent() {
           <Route path="/web3d-demo" element={<Web3DDemo />} />
           <Route path="/simple-test" element={<SimpleFrameworkTest />} />
           <Route path="/character-3d" element={<Character3DGenerator />} />
+          <Route path="/voice-generator" element={<VoiceGenerator />} />
         </Routes>
       </main>
     </div>

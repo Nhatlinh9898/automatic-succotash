@@ -7,6 +7,7 @@ export function setupOrbitControls(camera, renderer) {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true; // Smooth animation
     controls.dampingFactor = 0.05;
+    controls.update(); // Initialize controls
     return controls;
 }
 

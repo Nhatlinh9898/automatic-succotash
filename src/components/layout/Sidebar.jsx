@@ -50,6 +50,12 @@ const Sidebar = () => {
       category: 'ai'
     },
     { 
+      path: '/voice-generator', 
+      icon: '🎤', 
+      label: 'Voice Generator',
+      category: 'ai'
+    },
+    { 
       path: '/agents', 
       icon: '🤖', 
       label: 'AI Agents',

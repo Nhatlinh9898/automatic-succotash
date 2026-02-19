@@ -1,0 +1,33 @@
+/**
+ * Script khởi động Voice Server
+ */
+
+const { spawn } = require('child_process');
+const path = require('path');
+
+console.log('🎤 Starting Voice Server...');
+
+// Khởi động voice server
+const voiceServer = spawn('node', [path.join(__dirname, 'src/server/voiceServer.js')], {
+  stdio: 'inherit',
+  shell: true
+});
+
+voiceServer.on('close', (code) => {
+  console.log(`Voice server exited with code ${code}`);
+});
+
+voiceServer.on('error', (error) => {
+  console.error('Failed to start voice server:', error);
+});
+
+// Xử lý shutdown
+process.on('SIGINT', () => {
+  console.log('\n🛑 Shutting down voice server...');
+  voiceServer.kill('SIGINT');
+});
+
+process.on('SIGTERM', () => {
+  console.log('\n🛑 Shutting down voice server...');
+  voiceServer.kill('SIGTERM');
+});

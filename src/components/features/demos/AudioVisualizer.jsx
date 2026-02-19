@@ -27,6 +27,7 @@ const AudioVisualizer = () => {
   const audioElementRef = useRef(null);
   const visualizerObjectsRef = useRef([]);
   const particlesRef = useRef([]);
+  const controlsRef = useRef(null);
 
   const visualizationTypes = [
     { id: 'bars', name: 'Frequency Bars', icon: '📊', description: 'Classic frequency spectrum' },
@@ -98,7 +99,7 @@ const AudioVisualizer = () => {
     scene.add(pointLight3);
     
     // Add orbit controls
-    const controls = ThreeJSUtils.setupOrbitControls(camera, renderer);
+    controlsRef.current = ThreeJSUtils.setupOrbitControls(camera, renderer);
     
     // Initialize audio context
     initializeAudio();
@@ -106,7 +107,11 @@ const AudioVisualizer = () => {
     // Start animation loop
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate);
-      controls.update();
+      
+      // Update controls if available
+      if (controlsRef.current && controlsRef.current.update) {
+        controlsRef.current.update();
+      }
       
       updateVisualization();
       renderer.render(scene, camera);

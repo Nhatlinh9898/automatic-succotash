@@ -4,6 +4,16 @@ import './Header.css'
 const Header = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'home', label: 'Home', icon: '🏠' },
+    { id: 'showcase', label: '3D Showcase', icon: '🎮' },
+    { id: 'agents', label: 'Agents', icon: '🤖' },
+    { id: 'webxr', label: 'WebXR', icon: '🥽' },
+    { id: 'particles', label: 'Particles', icon: '✨' },
+    { id: 'character-generator', label: 'AI Character', icon: '🎭' },
+    { id: 'physics', label: 'Physics', icon: '⚡' },
+    { id: 'collaboration', label: 'Collaboration', icon: '🤝' },
+    { id: 'terrain', label: 'Terrain', icon: '🏔️' },
+    { id: 'audio-visualizer', label: 'Audio', icon: '🎵' },
+    { id: 'shader-editor', label: 'Shader Editor', icon: '🎨' },
     { id: 'characters', label: 'Characters', icon: '👤' },
     { id: 'history', label: 'History', icon: '📝' },
     { id: 'settings', label: 'Settings', icon: '⚙️' }

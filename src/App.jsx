@@ -6,6 +6,16 @@ import History from './components/History'
 import Settings from './components/Settings'
 import CharacterPrompts from './components/CharacterPrompts'
 import ErrorBoundary from './components/ErrorBoundary'
+import FeatureShowcase from './components/FeatureShowcase'
+import AgentSystemDemo from './components/AgentSystemDemo'
+import WebXRDemo from './components/WebXRDemo'
+import ParticleEffectsDemo from './components/ParticleEffectsDemo'
+import AICharacterGenerator from './components/AICharacterGenerator'
+import PhysicsPlayground from './components/PhysicsPlayground'
+import RealtimeCollaboration from './components/RealtimeCollaboration'
+import TerrainGenerator from './components/TerrainGenerator'
+import AudioVisualizer from './components/AudioVisualizer'
+import ShaderEditor from './components/ShaderEditor'
 import aiService from './services/aiService'
 import './App.css'
 
@@ -109,6 +119,26 @@ function App() {
         )
       case 'characters':
         return <CharacterPrompts />
+      case 'showcase':
+        return <FeatureShowcase />
+      case 'agents':
+        return <AgentSystemDemo />
+      case 'webxr':
+        return <WebXRDemo />
+      case 'particles':
+        return <ParticleEffectsDemo />
+      case 'character-generator':
+        return <AICharacterGenerator />
+      case 'physics':
+        return <PhysicsPlayground />
+      case 'collaboration':
+        return <RealtimeCollaboration />
+      case 'terrain':
+        return <TerrainGenerator />
+      case 'audio-visualizer':
+        return <AudioVisualizer />
+      case 'shader-editor':
+        return <ShaderEditor />
       default:
         return null
     }

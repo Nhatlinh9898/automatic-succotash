@@ -1,0 +1,36 @@
+.simple-framework-test {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+.test-header {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  color: white;
+}
+
+.test-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.5em;
+}
+
+.status {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  border-left: 3px solid #ff6b6b;
+}
+
+.test-container {
+  flex: 1;
+  position: relative;
+}

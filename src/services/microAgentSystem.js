@@ -871,12 +871,22 @@ Phân tích chi tiết cho seamless responsive design.
 
   // Helper method to call AI
   async callAI(prompt, options = {}) {
-    const aiService = this.aiService || (this.aiService = await (await import('./aiService.js')).default);
-    return await aiService.generatePrompt(prompt, {
-      ...options,
-      maxTokens: 1000,
-      temperature: 0.6
-    });
+    try {
+      console.log('[MicroAgentSystem] Calling OllamaService with prompt:', prompt.substring(0, 100) + '...');
+      
+      const result = await this.ollamaService.generateResponse(prompt, {
+        model: options.model || 'llama3.2:3b',
+        max_tokens: options.maxTokens || 1000,
+        temperature: options.temperature || 0.6,
+        stream: false
+      });
+      
+      console.log('[MicroAgentSystem] OllamaService response received');
+      return result;
+    } catch (error) {
+      console.error('[MicroAgentSystem] Error calling OllamaService:', error);
+      throw error;
+    }
   }
 
   // Get micro-agents for sub-agent

@@ -1103,8 +1103,22 @@ Mô tả chi tiết để seamless user experience design.
 
   // Helper method to call AI
   async callAI(prompt, options = {}) {
-    const aiService = this.aiService || (this.aiService = await (await import('./aiService.js')).default);
-    return await aiService.generatePrompt(prompt, options);
+    try {
+      console.log('[SubAgentSystem] Calling OllamaService with prompt:', prompt.substring(0, 100) + '...');
+      
+      const result = await this.ollamaService.generateResponse(prompt, {
+        model: options.model || 'llama3.2:3b',
+        max_tokens: options.maxTokens || 1200,
+        temperature: options.temperature || 0.7,
+        stream: false
+      });
+      
+      console.log('[SubAgentSystem] OllamaService response received');
+      return result;
+    } catch (error) {
+      console.error('[SubAgentSystem] Error calling OllamaService:', error);
+      throw error;
+    }
   }
 
   // ... (rest of the code remains the same)

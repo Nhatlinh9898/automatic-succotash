@@ -485,13 +485,24 @@ Thiết kế UI trực quan và dễ sử dụng.
     });
   }
 
-  // Call AI service (integrate with existing AIService)
+  // Call AI service (integrate with OllamaService)
   async callAI(prompt, options = {}) {
-    // Import AIService dynamically to avoid circular dependency
-    const { default: AIService } = await import('./aiService.js');
-    const aiService = new AIService();
-    
-    return await aiService.generatePrompt(prompt, options);
+    try {
+      console.log('[AgentSystem] Calling OllamaService with prompt:', prompt.substring(0, 100) + '...');
+      
+      const result = await this.ollamaService.generateResponse(prompt, {
+        model: options.model || 'llama3.2:3b',
+        max_tokens: options.maxTokens || 1500,
+        temperature: options.temperature || 0.7,
+        stream: false
+      });
+      
+      console.log('[AgentSystem] OllamaService response received');
+      return result;
+    } catch (error) {
+      console.error('[AgentSystem] Error calling OllamaService:', error);
+      throw error;
+    }
   }
 
   // Get all available agents

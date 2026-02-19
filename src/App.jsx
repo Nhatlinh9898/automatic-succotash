@@ -7,6 +7,9 @@ import { AICharacterGenerator, AITokenDemo, CharacterPrompts, CharacterSystem } 
 import { AgentManager, AgentSystemDemo, MicroAgentManager, SubAgentManager, MultiAgentDemo, SimpleAgentTest } from './components/features/agents'
 import { ParticleEffectsDemo, PhysicsPlayground, TerrainGenerator, ThreeJSScene, ShaderEditor, AudioVisualizer } from './components/features/demos'
 import { WebXRDemo } from './components/features/webxr'
+import Web3DDemo from './components/Web3DDemo'
+import SimpleFrameworkTest from './components/SimpleFrameworkTest'
+import Character3DGenerator from './components/Character3DGenerator'
 import aiService from './services/aiService'
 import './App.css'
 
@@ -108,6 +111,9 @@ function AppContent() {
     if (path.startsWith('/audio-visualizer')) return 'audio-visualizer';
     if (path.startsWith('/shader-editor')) return 'shader-editor';
     if (path.startsWith('/framework-integration')) return 'framework-integration';
+    if (path.startsWith('/web3d-demo')) return 'web3d-demo';
+    if (path.startsWith('/simple-test')) return 'simple-test';
+    if (path.startsWith('/character-3d')) return 'character-3d';
     return 'home';
   };
 
@@ -167,6 +173,9 @@ function AppContent() {
           <Route path="/audio-visualizer" element={<AudioVisualizer />} />
           <Route path="/shader-editor" element={<ShaderEditor />} />
           <Route path="/framework-integration" element={<FrameworkIntegration />} />
+          <Route path="/web3d-demo" element={<Web3DDemo />} />
+          <Route path="/simple-test" element={<SimpleFrameworkTest />} />
+          <Route path="/character-3d" element={<Character3DGenerator />} />
         </Routes>
       </main>
     </div>

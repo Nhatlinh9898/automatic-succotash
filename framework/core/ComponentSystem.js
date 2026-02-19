@@ -2,6 +2,8 @@
  * Component System - Extensible component architecture for Web3D Framework
  */
 
+import * as THREE from 'three';
+
 /**
  * Base Component class
  */

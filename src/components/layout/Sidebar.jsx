@@ -44,6 +44,12 @@ const Sidebar = () => {
       category: 'ai'
     },
     { 
+      path: '/character-3d', 
+      icon: '🎮', 
+      label: '3D Character',
+      category: 'ai'
+    },
+    { 
       path: '/agents', 
       icon: '🤖', 
       label: 'AI Agents',
@@ -89,6 +95,12 @@ const Sidebar = () => {
       path: '/audio-visualizer', 
       icon: '🎵', 
       label: 'Audio',
+      category: 'advanced'
+    },
+    { 
+      path: '/web3d-demo', 
+      icon: '🎮', 
+      label: 'Web3D Demo',
       category: 'advanced'
     },
     { 

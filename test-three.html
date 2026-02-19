@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web3D Framework Test</title>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; }
+        #info { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; }
+        #container { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h3>Web3D Framework Test</h3>
+        <div id="status">Loading...</div>
+    </div>
+    <div id="container"></div>
+    
+    <script type="module">
+        import * as THREE from 'three';
+        
+        const statusDiv = document.getElementById('status');
+        const container = document.getElementById('container');
+        
+        try {
+            // Test Three.js
+            statusDiv.innerHTML = '✅ THREE.js loaded<br>';
+            
+            // Create basic scene
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer();
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+            
+            // Add a cube
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+            
+            camera.position.z = 5;
+            
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                cube.rotation.x += 0.01;
+                cube.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            statusDiv.innerHTML += '✅ Three.js scene created<br>';
+            statusDiv.innerHTML += '✅ Animation running<br>';
+            statusDiv.innerHTML += '<strong>🎉 Three.js test successful!</strong>';
+            
+        } catch (error) {
+            statusDiv.innerHTML = `❌ Error: ${error.message}`;
+            console.error('Three.js test failed:', error);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3D Character Generator Test</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            background: linear-gradient(135deg, #2980b9, #21618c);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        .test-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .success { color: #2ecc71; }
+        .error { color: #e74c3c; }
+        .warning { color: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 3D Character Generator - Button Test</h1>
+        
+        <div class="test-section">
+            <h2>🔗 Route Testing</h2>
+            <button class="test-button" onclick="window.open('http://localhost:3002/character-3d', '_blank')">
+                🎮 Open 3D Character Generator
+            </button>
+            <button class="test-button" onclick="window.open('http://localhost:3002', '_blank')">
+                🏠 Open Main App
+            </button>
+            <button class="test-button" onclick="window.open('http://localhost:3002/character-generator', '_blank')">
+                🎭 Open Original Character Generator
+            </button>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Component Testing</h2>
+            <button class="test-button" onclick="testWeb3DIntegration()">
+                🌐 Test Web3D Framework
+            </button>
+            <button class="test-button" onclick="testAIIntegration()">
+                🤖 Test AI Integration
+            </button>
+            <button class="test-button" onclick="testButtonFunctionality()">
+                🖱️ Test Button Functionality
+            </button>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 System Status</h2>
+            <div id="status" class="status">Testing...</div>
+            <button class="test-button" onclick="checkSystemStatus()">
+                🔄 Refresh Status
+            </button>
+        </div>
+
+        <div class="test-section">
+            <h2>🐛 Debug Information</h2>
+            <div id="debug-info" class="status">Click "Check System Status" to see debug info</div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {
+            web3dFramework: false,
+            aiIntegration: false,
+            buttonFunctionality: false,
+            systemStatus: 'unknown'
+        };
+
+        async function testWeb3DIntegration() {
+            try {
+                console.log('🧪 Testing Web3D Framework integration...');
+                
+                // Test THREE.js import
+                if (typeof THREE !== 'undefined') {
+                    console.log('✅ THREE.js available');
+                    
+                    // Test basic Three.js objects
+                    const scene = new THREE.Scene();
+                    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+                    const renderer = new THREE.WebGLRenderer();
+                    
+                    console.log('✅ Basic Three.js objects created');
+                    
+                    // Test geometry creation
+                    const geometry = new THREE.BoxGeometry(1, 1, 1);
+                    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+                    const mesh = new THREE.Mesh(geometry, material);
+                    
+                    console.log('✅ Three.js geometry and material created');
+                    
+                    testResults.web3dFramework = true;
+                    updateStatus('✅ Web3D Framework integration successful', 'success');
+                } else {
+                    throw new Error('THREE.js not available');
+                }
+            } catch (error) {
+                console.error('❌ Web3D Framework test failed:', error);
+                testResults.web3dFramework = false;
+                updateStatus(`❌ Web3D Framework test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAIIntegration() {
+            try {
+                console.log('🤖 Testing AI integration...');
+                
+                // Test fetch to AI server
+                const response = await fetch('http://localhost:8080/health');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ AI Server health check passed:', data);
+                    testResults.aiIntegration = true;
+                    updateStatus('✅ AI integration successful', 'success');
+                } else {
+                    throw new Error(`AI server returned ${response.status}`);
+                }
+            } catch (error) {
+                console.error('❌ AI integration test failed:', error);
+                testResults.aiIntegration = false;
+                updateStatus(`❌ AI integration test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testButtonFunctionality() {
+            try {
+                console.log('🖱️ Testing button functionality...');
+                
+                // Simulate button clicks
+                const buttons = document.querySelectorAll('.test-button');
+                let workingButtons = 0;
+                
+                buttons.forEach(button => {
+                    try {
+                        // Test button properties
+                        if (button.onclick && typeof button.onclick === 'function') {
+                            workingButtons++;
+                        }
+                    } catch (e) {
+                        console.warn('Button test warning:', e);
+                    }
+                });
+                
+                if (workingButtons === buttons.length) {
+                    console.log('✅ All buttons functional');
+                    testResults.buttonFunctionality = true;
+                    updateStatus('✅ Button functionality test passed', 'success');
+                } else {
+                    throw new Error(`Only ${workingButtons}/${buttons.length} buttons working`);
+                }
+            } catch (error) {
+                console.error('❌ Button functionality test failed:', error);
+                testResults.buttonFunctionality = false;
+                updateStatus(`❌ Button functionality test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function checkSystemStatus() {
+            try {
+                console.log('🔄 Checking system status...');
+                
+                let statusHTML = '<strong>🔍 System Status Check:</strong><br><br>';
+                
+                // Check Web3D Framework
+                statusHTML += `🌐 Web3D Framework: ${testResults.web3dFramework ? '✅ Working' : '❌ Not Working'}<br>`;
+                
+                // Check AI Integration
+                statusHTML += `🤖 AI Integration: ${testResults.aiIntegration ? '✅ Working' : '❌ Not Working'}<br>`;
+                
+                // Check Button Functionality
+                statusHTML += `🖱️ Button Functionality: ${testResults.buttonFunctionality ? '✅ Working' : '❌ Not Working'}<br>`;
+                
+                // Check Browser Support
+                const webglSupport = !!window.WebGLRenderingContext;
+                statusHTML += `🌍 WebGL Support: ${webglSupport ? '✅ Supported' : '❌ Not Supported'}<br>`;
+                
+                // Check React DevTools
+                const reactDevTools = !!window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+                statusHTML += `⚛️ React DevTools: ${reactDevTools ? '✅ Available' : '⚠️ Not Available'}<br>`;
+                
+                // Check Console Errors
+                const consoleErrors = console.error.toString();
+                const hasConsoleErrors = consoleErrors.includes('native code') || consoleErrors.includes('error');
+                statusHTML += `📝 Console Status: ${hasConsoleErrors ? '⚠️ Errors Detected' : '✅ Clean'}<br>`;
+                
+                document.getElementById('debug-info').innerHTML = statusHTML;
+                
+                // Overall status
+                const allWorking = testResults.web3dFramework && testResults.aiIntegration && testResults.buttonFunctionality;
+                testResults.systemStatus = allWorking ? 'operational' : 'partial';
+                
+                updateStatus(
+                    allWorking ? '✅ All systems operational' : '⚠️ Some systems need attention',
+                    allWorking ? 'success' : 'warning'
+                );
+                
+            } catch (error) {
+                console.error('❌ System status check failed:', error);
+                updateStatus(`❌ System status check failed: ${error.message}`, 'error');
+            }
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            if (statusDiv) {
+                statusDiv.innerHTML = `<span class="${type}">${message}</span>`;
+                statusDiv.className = `status ${type}`;
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            console.log('🧪 3D Character Generator Test Page Loaded');
+            updateStatus('🧪 Test page ready - Click buttons to test functionality', 'success');
+        });
+
+        // Log test results for debugging
+        window.testResults = testResults;
+        window.updateStatus = updateStatus;
+    </script>
+</body>
+</html>

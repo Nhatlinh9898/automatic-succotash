@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import aiService from '../../../services/aiService';
 import characterAIService from '../../../services/characterAIService.js';
+import AgentSystem from '../../../services/agentSystem.js';
 import { promptTemplates } from './CharacterPrompts.jsx';
 import { 
   getMalePrompt, 
@@ -33,6 +34,8 @@ const AICharacterGenerator = () => {
   const [aiStatus, setAiStatus] = useState(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   const [character3DModel, setCharacter3DModel] = useState(null);
+  const [isAIResponding, setIsAIResponding] = useState(false);
+  const [aiResponse, setAiResponse] = useState(null);
   const canvasRef = useRef(null);
 
   const characterTypes = [
@@ -165,6 +168,68 @@ const AICharacterGenerator = () => {
       alert(`Character generation failed: ${error.message}`);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const generateAIResponse = async () => {
+    setIsAIResponding(true);
+    setAiResponse(null);
+
+    try {
+      // Xây dựng prompt từ character design và input người dùng
+      let prompt = `Character Design Request:\n`;
+      prompt += `Type: ${characterType}\n`;
+      prompt += `Gender: ${characterGender}\n`;
+      
+      if (selectedFrameworkPrompt) {
+        prompt += `Framework Prompt: ${selectedFrameworkPrompt}\n`;
+      }
+      
+      if (selectedPromptTemplate) {
+        prompt += `Template: ${selectedPromptTemplate.title}\n`;
+      }
+      
+      if (customPrompt) {
+        prompt += `Custom Requirements: ${customPrompt}\n`;
+      }
+      
+      if (characterTraits) {
+        prompt += `Traits:\n`;
+        Object.entries(characterTraits).forEach(([key, value]) => {
+          if (value) {
+            prompt += `- ${key}: ${value}\n`;
+          }
+        });
+      }
+
+      console.log('Sending to AgentSystem:', prompt);
+
+      // Gửi đến AgentSystem → SubAgentSystem → MicroAgentSystem
+      const result = await AgentSystem.processRequest(prompt, {
+        useSubAgents: true,
+        useMicroAgents: true,
+        useLibrary: true,
+        temperature: 0.8,
+        maxTokens: 2000
+      });
+
+      console.log('AgentSystem result:', result);
+
+      setAiResponse({
+        content: result.result,
+        processingChain: result.processingChain,
+        fromLibrary: result.fromLibrary,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      console.error('AI Response generation failed:', error);
+      setAiResponse({
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    } finally {
+      setIsAIResponding(false);
     }
   };
 
@@ -498,6 +563,14 @@ const AICharacterGenerator = () => {
                   {isGenerating ? '🔄 Generating...' : '✨ Generate Character'}
                 </button>
                 
+                <button
+                  className="flex-1 p-4 border-none rounded-lg text-white cursor-pointer text-base font-bold transition-all duration-300 bg-gradient-to-r from-purple-500 to-purple-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={generateAIResponse}
+                  disabled={isAIResponding}
+                >
+                  {isAIResponding ? '🔄 AI Processing...' : '🤖 Generate AI Response'}
+                </button>
+                
                 {generatedCharacter && (
                   <button 
                     className="flex-1 p-4 border-none rounded-lg text-white cursor-pointer text-base font-bold transition-all duration-300 bg-gradient-to-r from-blue-500 to-blue-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/40" 
@@ -512,6 +585,68 @@ const AICharacterGenerator = () => {
 
           {/* Right Column - Results & History */}
           <div className="space-y-6">
+            {/* AI Response Display */}
+            {aiResponse && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <span>🤖</span>
+                  AI Response (Multi-Agent Processing)
+                </h3>
+                
+                {aiResponse.error ? (
+                  <div className="text-red-400 p-4 bg-red-900/20 rounded-lg">
+                    <strong>Error:</strong> {aiResponse.error}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {/* Processing Chain Info */}
+                    {aiResponse.processingChain && (
+                      <div className="bg-white/5 rounded-lg p-3">
+                        <h4 className="text-sm font-semibold text-white mb-2">Processing Chain:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
+                            Main: {aiResponse.processingChain.mainAgent}
+                          </span>
+                          {aiResponse.processingChain.subAgent && (
+                            <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs">
+                              Sub: {aiResponse.processingChain.subAgent}
+                            </span>
+                          )}
+                          {aiResponse.processingChain.microAgent && (
+                            <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs">
+                              Micro: {aiResponse.processingChain.microAgent}
+                            </span>
+                          )}
+                          <span className="px-2 py-1 bg-gray-500/20 text-gray-300 rounded text-xs">
+                            Level: {aiResponse.processingChain.level}
+                          </span>
+                        </div>
+                        {aiResponse.fromLibrary && (
+                          <div className="mt-2 text-xs text-yellow-300">
+                            ⚡ Result from Library Cache
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* AI Response Content */}
+                    <div className="text-white">
+                      <div className="prose prose-invert max-w-none">
+                        <pre className="whitespace-pre-wrap text-sm leading-relaxed opacity-90">
+                          {aiResponse.content}
+                        </pre>
+                      </div>
+                    </div>
+                    
+                    {/* Timestamp */}
+                    <div className="text-xs text-gray-400">
+                      Generated: {new Date(aiResponse.timestamp).toLocaleString()}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Generated Character Display */}
             {generatedCharacter && (
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
@@ -603,6 +738,15 @@ const AICharacterGenerator = () => {
           <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-50">
             <div className="w-12 h-12 border-3 border-white/30 border-t-white rounded-full animate-spin mb-5"></div>
             <p className="text-white text-lg">Creating your character with AI...</p>
+          </div>
+        )}
+
+        {/* AI Response Loading Overlay */}
+        {isAIResponding && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-50">
+            <div className="w-12 h-12 border-3 border-purple-300 border-t-purple-500 rounded-full animate-spin mb-5"></div>
+            <p className="text-white text-lg mb-2">Processing with Multi-Agent System...</p>
+            <p className="text-purple-300 text-sm">AgentSystem → SubAgentSystem → MicroAgentSystem</p>
           </div>
         )}
       </div>

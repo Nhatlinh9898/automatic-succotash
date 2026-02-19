@@ -1,0 +1,194 @@
+.framework-manager {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.framework-manager.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.loading-spinner {
+  text-align: center;
+  color: white;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.framework-manager.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.error-message {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.error-message h3 {
+  color: #e74c3c;
+  margin-bottom: 15px;
+}
+
+.error-message p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.retry-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.retry-button:hover {
+  background: #2980b9;
+}
+
+.web3d-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.framework-stats {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+}
+
+.stats-panel {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 12px;
+  min-width: 200px;
+  backdrop-filter: blur(10px);
+}
+
+.stats-panel h4 {
+  margin: 0 0 10px 0;
+  color: #3498db;
+  font-size: 14px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  padding: 2px 0;
+}
+
+.stat-item span:first-child {
+  color: #bdc3c7;
+}
+
+.stat-item span:last-child {
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+.framework-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+}
+
+.control-btn {
+  background: rgba(52, 152, 219, 0.9);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.control-btn:hover {
+  background: rgba(41, 128, 185, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.control-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .framework-stats {
+    top: 5px;
+    left: 5px;
+  }
+  
+  .stats-panel {
+    padding: 10px;
+    min-width: 150px;
+    font-size: 11px;
+  }
+  
+  .framework-controls {
+    bottom: 10px;
+    right: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .control-btn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .error-message {
+    background: rgba(30, 30, 30, 0.95);
+    color: white;
+  }
+  
+  .error-message h3 {
+    color: #e74c3c;
+  }
+  
+  .error-message p {
+    color: #bdc3c7;
+  }
+}

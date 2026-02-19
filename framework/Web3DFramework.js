@@ -3,6 +3,7 @@
  * Comprehensive 3D Web Framework with modular architecture
  */
 
+import * as THREE from 'three';
 import { Web3DEngine } from './core/Web3DEngine.js';
 import { 
     Component,
@@ -631,6 +632,7 @@ class Web3DUtils {
 
 // Export everything
 export {
+    THREE,
     Web3DFramework,
     Web3DUtils,
     // Core

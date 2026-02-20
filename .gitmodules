@@ -1,0 +1,6 @@
+[submodule "DeepSeek-OCR-2"]
+	path = DeepSeek-OCR-2
+	url = https://github.com/deepseek-ai/DeepSeek-OCR-2.git
+[submodule "Wan2.1"]
+	path = Wan2.1
+	url = https://github.com/Wan2.1/Wan2.1.git

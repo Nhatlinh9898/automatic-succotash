@@ -179,6 +179,39 @@ npm run lint
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+### Third-Party Components and Licensing
+
+#### Voice Generation Components
+The voice generation features in this project utilize the PersonaPlex model with the following licensing terms:
+
+**Governing Terms:** Use of this model is governed by the NVIDIA Open Model License Agreement.
+
+**Additional Information:** CC-BY-4.0
+
+**Citation:**
+```bibtex
+@misc{roy2026personaplexvoicerolecontrol,
+      title={PersonaPlex: Voice and Role Control for Full Duplex Conversational Speech Models}, 
+      author={Rajarshi Roy and Jonathan Raiman and Sang-gil Lee and Teodor-Dumitru Ene and Robert Kirby and Sungwon Kim and Jaehyeon Kim and Bryan Catanzaro},
+      year={2026},
+      eprint={2602.06053},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2602.06053}, 
+}
+```
+
+**Important Notes:**
+- The voice generation components are subject to the NVIDIA Open Model License Agreement
+- Additional CC-BY-4.0 terms apply to the PersonaPlex model
+- Users must comply with both the MIT License for this project and the NVIDIA Open Model License Agreement for voice components
+- Proper attribution must be included when using the PersonaPlex model
+
+#### Other Dependencies
+- **Three.js** - MIT License
+- **React** - MIT License
+- **Other dependencies** - Various open source licenses (see package.json)
+
 ## 🙏 Acknowledgments
 
 - Three.js team for the amazing 3D library

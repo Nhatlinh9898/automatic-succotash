@@ -1,4 +1,17 @@
-import React, { useState, useEffect } from 'react';
+/**
+ * VoiceGenerator Component
+ * 
+ * This component provides text-to-speech functionality using the PersonaPlex model.
+ * 
+ * Licensing Notice:
+ * - This component uses the PersonaPlex model governed by NVIDIA Open Model License Agreement
+ * - Additional CC-BY-4.0 terms apply
+ * - Required attribution: @misc{roy2026personaplexvoicerolecontrol, ...}
+ * 
+ * Users must comply with both MIT License (for this code) and NVIDIA Open Model License Agreement (for the model)
+ */
+
+import React, { useState, useEffect, useRef } from 'react';
 import voiceService from '../services/voiceService.js';
 import './VoiceGenerator.css';
 

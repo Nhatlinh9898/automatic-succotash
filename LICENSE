@@ -1,0 +1,45 @@
+MIT License
+
+Copyright (c) 2026 Nhatlinh9898
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Third-Party Components Notice:
+
+This project includes voice generation components that utilize the PersonaPlex model,
+which is governed by separate licensing terms:
+
+**PersonaPlex Model License:**
+- Governing Terms: NVIDIA Open Model License Agreement
+- Additional Terms: CC-BY-4.0
+- Required Attribution: 
+  @misc{roy2026personaplexvoicerolecontrol,
+        title={PersonaPlex: Voice and Role Control for Full Duplex Conversational Speech Models}, 
+        author={Rajarshi Roy and Jonathan Raiman and Sang-gil Lee and Teodor-Dumitru Ene and Robert Kirby and Sungwon Kim and Jaehyeon Kim and Bryan Catanzaro},
+        year={2026},
+        eprint={2602.06053},
+        archivePrefix={arXiv},
+        primaryClass={cs.CL},
+        url={https://arxiv.org/abs/2602.06053}, 
+  }
+
+Users of the voice generation features must comply with both the MIT License for this
+project and the NVIDIA Open Model License Agreement for the PersonaPlex model components.

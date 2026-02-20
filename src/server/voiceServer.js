@@ -3,11 +3,15 @@
  * Express server cung cấp API endpoints cho text-to-speech
  */
 
-const express = require('express');
-const path = require('path');
-const fs = require('fs');
-const { spawn } = require('child_process');
-const cors = require('cors');
+import express from 'express';
+import path from 'path';
+import fs from 'fs';
+import { spawn } from 'child_process';
+import cors from 'cors';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class VoiceServer {
   constructor(port = 3001) {
@@ -200,9 +204,9 @@ class VoiceServer {
 }
 
 // Start server if run directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const server = new VoiceServer();
   server.start();
 }
 
-module.exports = VoiceServer;
+export default VoiceServer;

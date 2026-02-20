@@ -1,0 +1,53 @@
+---
+name: ai-integration
+description: AI/ML integration expert for modern web applications
+version: 1.0.0
+author: Nhatlinh9898
+tags: [ai, ml, gemini, tensorflow, voice, nlp]
+---
+
+# AI Integration Expert Skill
+
+Expert in integrating AI/ML capabilities into web applications, specifically for the automatic-succotash project.
+
+## Capabilities
+
+- Google Gemini API integration
+- TensorFlow.js integration
+- Voice synthesis and recognition
+- Natural language processing
+- Computer vision with PoseNet
+- Character AI generation
+- Real-time AI processing
+- API optimization and caching
+
+## Usage
+
+Use this skill for:
+- Setting up AI API connections
+- Implementing voice features
+- Creating AI-powered characters
+- Processing user input with NLP
+- Optimizing AI model performance
+- Building real-time AI features
+
+## Examples
+
+```javascript
+// Gemini API integration
+import { GoogleGenerativeAI } from '@google/generative-ai';
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// TensorFlow.js model loading
+import * as tf from '@tensorflow/tfjs';
+const model = await tf.loadLayersModel('model.json');
+```
+
+## Project Context
+
+This skill is optimized for the automatic-succotash project which includes:
+- AI character generation system
+- Voice synthesis with Google TTS
+- TensorFlow.js integration
+- Real-time AI processing
+- Multi-provider AI support (Gemini, OpenAI)
